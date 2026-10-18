@@ -38,6 +38,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -220,6 +221,7 @@ fun ChatScreen(
     var timedOut by remember { mutableStateOf(false) }
     var slow by remember { mutableStateOf(false) }
     var showJump by remember { mutableStateOf(false) }
+    var replyAsVoice by remember { mutableStateOf(false) }
     val statuses = remember { mutableStateMapOf<String, String>() }
 
     val listState = rememberLazyListState()
@@ -259,7 +261,13 @@ fun ChatScreen(
         }.onFailure { notify("播放失败") }
     }
 
-    suspend fun runRequest(userMsgId: String, text: String, quote: String?, imageDataUrl: String? = null) = coroutineScope {
+    suspend fun runRequest(
+        userMsgId: String,
+        text: String,
+        quote: String?,
+        imageDataUrl: String? = null,
+        previousReply: String? = null,
+    ) = coroutineScope {
         val history = store.messages(friendId)
         messages = history
         streaming = true
@@ -340,10 +348,41 @@ fun ChatScreen(
             if (!AppVisibility.foreground) {
                 ChatNotifier.notifyMessage(context, friendId, friend.name, text)
             }
-            store.append(
-                friendId,
-                ChatMessage(UUID.randomUUID().toString(), Roles.FRIEND, acc.trim()),
-            )
+            val replyText = acc.trim()
+            val alts = listOfNotNull(previousReply?.takeIf { it.isNotBlank() })
+            if (cfg.voiceReply || replyAsVoice) {
+                replyAsVoice = false
+                // 把回复合成成语音条：优先克隆音色，退系统语音
+                val audio = runCatching {
+                    voice.synthesizeToFile(replyText, friend, store.voiceFile(friend), cfg)
+                }.getOrNull()
+                val stored = audio?.let { store.adoptFile(it, FriendStore.Kind.AUDIO) }
+                if (audio != null) runCatching { audio.delete() }
+                if (stored != null) {
+                    store.append(
+                        friendId,
+                        ChatMessage(
+                            id = UUID.randomUUID().toString(),
+                            role = Roles.FRIEND,
+                            text = replyText,
+                            kind = ChatMessage.KIND_VOICE,
+                            media = stored,
+                            durationMs = (replyText.length * 180L).coerceIn(1200L, 60_000L),
+                            alternatives = alts,
+                        ),
+                    )
+                } else {
+                    store.append(
+                        friendId,
+                        ChatMessage(UUID.randomUUID().toString(), Roles.FRIEND, replyText, alternatives = alts),
+                    )
+                }
+            } else {
+                store.append(
+                    friendId,
+                    ChatMessage(UUID.randomUUID().toString(), Roles.FRIEND, replyText, alternatives = alts),
+                )
+            }
             messages = store.messages(friendId)
             statuses.remove(userMsgId)
             if (!AppVisibility.foreground) {
@@ -417,6 +456,7 @@ fun ChatScreen(
                     durationMs = durationMs,
                 ),
             )
+            replyAsVoice = true
             messages = store.messages(friendId)
         }
     }
@@ -659,9 +699,10 @@ fun ChatScreen(
                                                 val keep = all.filter {
                                                     it.role != Roles.FRIEND || it.at <= (lastUser?.at ?: 0L)
                                                 }
+                                                val oldReply = all.lastOrNull { it.role == Roles.FRIEND }?.text
                                                 store.replaceAll(friendId, keep)
                                                 messages = store.messages(friendId)
-                                                lastUser?.let { runRequest(it.id, it.text, it.quote) }
+                                                lastUser?.let { runRequest(it.id, it.text, it.quote, previousReply = oldReply) }
                                             }
                                         }
                                     },
@@ -673,6 +714,19 @@ fun ChatScreen(
                                         }
                                     },
                                     onSpeak = { speak(message.text) },
+                                    onSwipe = {
+                                        val variants = listOf(message.text) + message.alternatives
+                                        if (variants.size > 1) {
+                                            val next = variants.drop(1) + variants.first()
+                                            scope.launch {
+                                                store.updateMessage(
+                                                    friendId,
+                                                    message.copy(text = next.first(), alternatives = next.drop(1)),
+                                                )
+                                                messages = store.messages(friendId)
+                                            }
+                                        }
+                                    },
                                     onCopy = {
                                         val cm = context.getSystemService(ClipboardManager::class.java)
                                         cm?.setPrimaryClip(ClipData.newPlainText("message", message.text))
@@ -715,6 +769,7 @@ fun ChatScreen(
                             onCopy = {},
                             onSpeak = {},
                             onDelete = {},
+                            onSwipe = {},
                         )
                     }
                 }
@@ -1192,6 +1247,7 @@ private fun MessageRow(
     onPlayVoice: () -> Unit,
     onOpenImage: () -> Unit,
     onQuote: () -> Unit,
+    onSwipe: () -> Unit = {},
     onRegenerate: () -> Unit,
     onRollback: () -> Unit,
     onCopy: () -> Unit,
@@ -1260,6 +1316,20 @@ private fun MessageRow(
                     ),
                 )
                 .background(if (mine) mineBubble else friendBubble)
+                .pointerInput(message.id, message.alternatives.size) {
+                    var dragged = 0f
+                    detectDragGestures(
+                        onDragEnd = {
+                            if (kotlin.math.abs(dragged) > 60f) onSwipe()
+                            dragged = 0f
+                        },
+                        onDragCancel = { dragged = 0f },
+                        onDrag = { change, dragAmount ->
+                            change.consume()
+                            dragged += dragAmount.x
+                        },
+                    )
+                }
                 .combinedClickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,

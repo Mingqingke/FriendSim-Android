@@ -67,6 +67,8 @@ data class ChatMessage(
     val durationMs: Long = 0L,
     /** 引用回复的对象。 */
     val quote: String? = null,
+    /** 其他候选回复（左右滑切换）。 */
+    val alternatives: List<String> = emptyList(),
 ) {
     companion object {
         const val KIND_TEXT = "text"

@@ -36,6 +36,7 @@ data class EngineConfig(
     val proactive: Boolean = true,
     val quietHours: Boolean = true,
     val keyValid: Boolean = true,
+    val voiceReply: Boolean = false,
 ) {
     val hasKey: Boolean get() = apiKey.isNotBlank()
 }
@@ -118,6 +119,7 @@ class SettingsStore(private val context: Context) {
         val proactive = booleanPreferencesKey("proactive")
         val quietHours = booleanPreferencesKey("quiet_hours")
         val keyValid = booleanPreferencesKey("key_valid")
+        val voiceReply = booleanPreferencesKey("voice_reply")
     }
 
     val apiKey: Flow<String> = context.fsStore.data.map { it[Key.apiKey] ?: "" }
@@ -130,6 +132,7 @@ class SettingsStore(private val context: Context) {
     val bridgeUrl: Flow<String> = context.fsStore.data.map { it[Key.bridgeUrl] ?: "http://127.0.0.1:9880" }
     val ttsMode: Flow<String> = context.fsStore.data.map { it[Key.ttsMode] ?: "BRIDGE" }
     val autoSpeak: Flow<Boolean> = context.fsStore.data.map { it[Key.autoSpeak] ?: false }
+    val voiceReply: Flow<Boolean> = context.fsStore.data.map { it[Key.voiceReply] ?: false }
     val themeMode: Flow<String> = context.fsStore.data.map { it[Key.themeMode] ?: "SYSTEM" }
     val dynamicColor: Flow<Boolean> = context.fsStore.data.map { it[Key.dynamicColor] ?: true }
 
@@ -190,6 +193,7 @@ class SettingsStore(private val context: Context) {
     suspend fun setProactive(v: Boolean) = context.fsStore.edit { it[Key.proactive] = v }
     suspend fun setQuietHours(v: Boolean) = context.fsStore.edit { it[Key.quietHours] = v }
     suspend fun setKeyValid(v: Boolean) = context.fsStore.edit { it[Key.keyValid] = v }
+    suspend fun setVoiceReply(v: Boolean) = context.fsStore.edit { it[Key.voiceReply] = v }
 
     suspend fun snapshot(): EngineConfig {
         val p = context.fsStore.data.first()
@@ -213,6 +217,7 @@ class SettingsStore(private val context: Context) {
             proactive = p[Key.proactive] ?: true,
             quietHours = p[Key.quietHours] ?: true,
             keyValid = p[Key.keyValid] ?: true,
+            voiceReply = p[Key.voiceReply] ?: false,
         )
     }
 

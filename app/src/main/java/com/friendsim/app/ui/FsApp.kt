@@ -221,6 +221,7 @@ fun FsApp() {
                             is Route.ChatSettings -> ChatSettingsScreen(
                                 onBack = pop,
                                 onOpenAdvanced = { push(Route.Advanced) },
+                                notify = notify,
                             )
 
                             is Route.VoiceSettings -> VoiceSettingsScreen(onBack = pop, notify = notify)

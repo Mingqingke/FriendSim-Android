@@ -47,12 +47,14 @@ private val ttsValues = listOf(
 fun ChatSettingsScreen(
     onBack: () -> Unit,
     onOpenAdvanced: () -> Unit,
+    notify: (String) -> Unit = {},
 ) {
     val settings = AppGraph.settings
     val scope = rememberCoroutineScope()
     val apiKey by settings.apiKey.collectAsState(initial = "")
     val allowPublic by settings.allowPublic.collectAsState(initial = true)
     val offlineOnly by settings.offlineOnly.collectAsState(initial = false)
+    var firing by remember { mutableStateOf(false) }
     var weatherOn by remember { mutableStateOf(true) }
     var proactiveOn by remember { mutableStateOf(true) }
     var quietHours by remember { mutableStateOf(true) }
@@ -119,6 +121,27 @@ fun ChatSettingsScreen(
                 summary = null,
             )
             HorizontalDivider()
+            ArrowPreference(
+                title = if (firing) "正在发送…" else "现在试一条",
+                summary = "忽略时间间隔，立刻让一个朋友找你",
+                onClick = {
+                    if (!firing) {
+                        firing = true
+                        scope.launch {
+                            val sent = runCatching {
+                                com.friendsim.app.core.notify.ProactiveEngine.fire(
+                                    AppGraph.app,
+                                    ignoreGap = true,
+                                    ignoreQuiet = true,
+                                )
+                            }.getOrNull()
+                            firing = false
+                            notify(if (sent != null) "${sent.name} 发来一条" else "没有可以发的朋友")
+                        }
+                    }
+                },
+            )
+            HorizontalDivider()
             Footnote("主动消息只在隔了半天以上、且不在 23:00–08:00 时出现。")
         }
     }
@@ -133,6 +156,7 @@ fun VoiceSettingsScreen(
     val settings = AppGraph.settings
     val scope = rememberCoroutineScope()
     val autoSpeak by settings.autoSpeak.collectAsState(initial = false)
+    val voiceReply by settings.voiceReply.collectAsState(initial = false)
     var bridgeUrl by remember { mutableStateOf(SettingsStore.DEFAULT_BRIDGE) }
     var ttsMode by remember { mutableStateOf(SettingsStore.TTS_BRIDGE) }
 
@@ -164,6 +188,13 @@ fun VoiceSettingsScreen(
                 },
                 title = "自动朗读",
                 summary = null,
+            )
+            HorizontalDivider()
+            SwitchPreference(
+                checked = voiceReply,
+                onCheckedChange = { scope.launch { settings.setVoiceReply(it) } },
+                title = "用语音条回复",
+                summary = if (voiceReply) "回复会变成可播放的语音条" else null,
             )
             HorizontalDivider()
             Footnote("连不上克隆引擎时自动改用系统语音。")

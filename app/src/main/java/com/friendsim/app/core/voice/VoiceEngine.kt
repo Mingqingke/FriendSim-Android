@@ -38,6 +38,8 @@ class VoiceEngine(private val context: Context) {
         .callTimeout(70, TimeUnit.SECONDS)
         .build()
 
+    private val pendingSynth = java.util.concurrent.ConcurrentHashMap<String, kotlinx.coroutines.CompletableDeferred<Boolean>>()
+
     private var systemTts: TextToSpeech? = null
     private var systemReady = false
     private val readyFlow = kotlinx.coroutines.flow.MutableStateFlow(false)
@@ -47,6 +49,23 @@ class VoiceEngine(private val context: Context) {
         if (systemTts != null) return
         systemTts = TextToSpeech(context.applicationContext) { status ->
             systemReady = status == TextToSpeech.SUCCESS
+            runCatching {
+                systemTts?.setOnUtteranceProgressListener(object : android.speech.tts.UtteranceProgressListener() {
+                    override fun onStart(utteranceId: String?) = Unit
+                    override fun onDone(utteranceId: String?) {
+                        utteranceId?.let { pendingSynth.remove(it)?.complete(true) }
+                    }
+
+                    @Deprecated("Deprecated in Java")
+                    override fun onError(utteranceId: String?) {
+                        utteranceId?.let { pendingSynth.remove(it)?.complete(false) }
+                    }
+
+                    override fun onError(utteranceId: String?, errorCode: Int) {
+                        utteranceId?.let { pendingSynth.remove(it)?.complete(false) }
+                    }
+                })
+            }
             if (systemReady) {
                 runCatching {
                     systemTts?.language = Locale.CHINA
@@ -114,6 +133,48 @@ class VoiceEngine(private val context: Context) {
         if (!systemReady) return Mode.NONE
         engine.speak(text, TextToSpeech.QUEUE_FLUSH, null, "fs-${System.currentTimeMillis()}")
         return Mode.SYSTEM
+    }
+
+    /**
+     * 把一句话合成为音频文件：优先克隆桥接，失败退系统 TTS 的 synthesizeToFile。
+     * 用来把朋友的回复变成语音条。
+     */
+    suspend fun synthesizeToFile(
+        text: String,
+        friend: Friend,
+        voiceFile: File?,
+        config: EngineConfig,
+    ): File? = withContext(Dispatchers.IO) {
+        if (text.isBlank()) return@withContext null
+
+        if (config.ttsMode == SettingsStore.TTS_BRIDGE && voiceFile != null) {
+            clone(text, friend, voiceFile, config.bridgeUrl)?.let { return@withContext it }
+        }
+
+        prepareSystemTts()
+        if (!readyFlow.value) {
+            kotlinx.coroutines.withTimeoutOrNull(2500L) { readyFlow.first { it } }
+        }
+        val engine = systemTts ?: return@withContext null
+        if (!systemReady) return@withContext null
+
+        val out = File(context.cacheDir, "tts_${System.currentTimeMillis()}.wav")
+        val id = "synth-${System.currentTimeMillis()}"
+        val deferred = kotlinx.coroutines.CompletableDeferred<Boolean>()
+        pendingSynth[id] = deferred
+        val ok = engine.synthesizeToFile(text, android.os.Bundle(), out, id) == TextToSpeech.SUCCESS
+        if (!ok) {
+            pendingSynth.remove(id)
+            return@withContext null
+        }
+        val done = kotlinx.coroutines.withTimeoutOrNull(10_000L) { deferred.await() } ?: false
+        pendingSynth.remove(id)
+        if (!done || !out.exists() || out.length() < 1024) {
+            out.delete()
+            null
+        } else {
+            out
+        }
     }
 
     /** 试听用：直接系统语音，不走桥接（等初始化完成，最多 2.5 秒）。 */

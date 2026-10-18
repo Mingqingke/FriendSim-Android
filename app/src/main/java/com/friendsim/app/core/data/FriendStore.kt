@@ -189,6 +189,11 @@ class FriendStore(private val context: Context) {
         touch(friendId)
     }
 
+    suspend fun updateMessage(friendId: String, message: ChatMessage) = withContext(Dispatchers.IO) {
+        val all = messages(friendId).map { if (it.id == message.id) message else it }
+        writeChat(friendId, all)
+    }
+
     suspend fun replaceAll(friendId: String, list: List<ChatMessage>) = withContext(Dispatchers.IO) {
         writeChat(friendId, list)
     }

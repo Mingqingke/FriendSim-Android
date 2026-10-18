@@ -76,6 +76,7 @@ private val pages = listOf(
     Page("遇见", "把那个特别的人 留在身边", "继续"),
     Page("听见", "用一段熟悉的声音 唤醒专属的陪伴", "继续"),
     Page("看见", "一张照片 定格那些未曾褪色的瞬间", "继续"),
+    Page("会想起你", "隔了几天 它也会先问一句", "继续"),
     Page("好久不见", "故事 从这里继续", "开启对话"),
 )
 
@@ -83,6 +84,7 @@ private val notes = listOf(
     "不用注册 不用填 Key",
     "声音可以之后在档案里补上",
     "照片只留在本机",
+    "深夜不会打扰你",
     "从新建一个朋友开始",
 )
 
@@ -227,14 +229,14 @@ fun OnboardingScreen(onFinish: () -> Unit) {
                             .clip(RoundedCornerShape(26.dp))
                             .background(if (switching) scheme.primary.copy(alpha = 0.4f) else scheme.primary)
                             .bouncyClickable(enabled = !switching) {
-                                if (page < 3) go(page + 1) else complete()
+                                if (page < pages.lastIndex) go(page + 1) else complete()
                             },
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(text = pages[page].action, color = scheme.onPrimary, fontSize = 16.sp)
                     }
                     Spacer(Modifier.height(14.dp))
-                    AnimatedVisibility(visible = page == 3, enter = fadeIn(tween(240)), exit = fadeOut(tween(120))) {
+                    AnimatedVisibility(visible = page == pages.lastIndex, enter = fadeIn(tween(240)), exit = fadeOut(tween(120))) {
                         Text(
                             text = "照片 声音 都可以之后在设置里添加",
                             fontSize = 11.sp,
@@ -367,7 +369,7 @@ private fun MorphVisual(page: Int, accent: Color, modifier: Modifier = Modifier)
 private fun StepDots(step: Int, motionReduced: Boolean) {
     val scheme = MiuixTheme.colorScheme
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
-        repeat(4) { index ->
+        repeat(pages.size) { index ->
             val width by animateFloatAsState(
                 targetValue = if (index == step) 20f else 6f,
                 animationSpec = if (motionReduced) MotionTokens.instant else MotionTokens.springFast,
