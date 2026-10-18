@@ -22,7 +22,7 @@
 
 技术上是从 KernelSU 的 Manager 模块剥离出来的（只留 Compose + MVVM 那套壳，Root 相关的全拆了），所以是 GPL-3.0。
 
-**地址**：https://github.com/Mingqingke/FriendSim
+**地址**：https://github.com/Mingqingke/FriendSim-Android
 
 欢迎拍砖。特别是动画节奏和气泡尾巴的形状，我自己看久了已经失去判断力了。
 
@@ -55,7 +55,7 @@ Messages degrade in three steps: your own key → keyless public endpoints → f
 
 The tail shape and the spring timings. Also: is the three-tier fallback the right default, or should a keyless public endpoint be opt-in?
 
-Repo: https://github.com/Mingqingke/FriendSim (GPL-3.0, APK in Releases)
+Repo: https://github.com/Mingqingke/FriendSim-Android (GPL-3.0, APK in Releases)
 
 ---
 

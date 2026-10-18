@@ -6,7 +6,7 @@
 <p align="center">
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/License-GPL--3.0-blue.svg"></a>
   <img alt="API" src="https://img.shields.io/badge/API-26%2B-brightgreen.svg">
-  <a href="https://github.com/Mingqingke/FriendSim/actions"><img alt="Build" src="https://github.com/Mingqingke/FriendSim/actions/workflows/build.yml/badge.svg"></a>
+  <a href="https://github.com/Mingqingke/FriendSim-Android/actions"><img alt="Build" src="https://github.com/Mingqingke/FriendSim-Android/actions/workflows/build.yml/badge.svg"></a>
 </p>
 
 <p align="center">
@@ -60,7 +60,7 @@
 
 ## 下载
 
-[Releases](https://github.com/Mingqingke/FriendSim/releases) 里下载 `apk`，Android 8.0 以上，arm64。
+[Releases](https://github.com/Mingqingke/FriendSim-Android/releases) 里下载 `apk`，Android 8.0 以上，arm64。
 
 ## 构建
 
