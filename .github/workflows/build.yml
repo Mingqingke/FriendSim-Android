@@ -18,13 +18,19 @@ jobs:
           distribution: temurin
           java-version: '21'
 
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+
+      - name: Install SDK components
+        run: sdkmanager --install "platforms;android-37" "build-tools;36.0.0" "platform-tools"
 
       - name: Write local.properties
         run: echo "sdk.dir=$ANDROID_HOME" > local.properties
 
-      - name: Build debug
+      - name: Assemble debug
         run: ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: Unit tests

@@ -1,10 +1,6 @@
 # FriendSim
 
 <p align="center">
-  <img src="screenshots/icon.png" width="96" alt="FriendSim">
-</p>
-
-<p align="center">
   一款可以让你跟朋友对话的简易聊天工具
 </p>
 
@@ -66,7 +62,7 @@ Android 8.0 以上，arm64。
 
 ## 构建
 
-需要 JDK 21 与 Android SDK 37。根目录新建 `local.properties`：
+需要 JDK 21 与 Android SDK 37（`platforms;android-37`、`build-tools;36.0.0`）。根目录新建 `local.properties`：
 
 ```properties
 sdk.dir=/path/to/android-sdk
