@@ -1,0 +1,28 @@
+# Android / Gradle
+*.iml
+.gradle/
+.kotlin/
+build/
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+
+# IDE
+.idea/
+*.hprof
+
+# 产物
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+app/build/
+
+# 系统
+.DS_Store
+Thumbs.db
+
+# 本地调试
+*.log

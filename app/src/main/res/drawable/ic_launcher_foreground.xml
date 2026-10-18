@@ -1,0 +1,19 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- 气泡整体缩到 0.72，四周留出安全边，避免图标显得又大又挤 -->
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleX="0.72"
+        android:scaleY="0.72">
+        <path
+            android:pathData="M34,32 h40 a11,11 0 0 1 11,11 v18 a11,11 0 0 1 -11,11 h-22 l-13,11 v-11 h-5 a11,11 0 0 1 -11,-11 v-18 a11,11 0 0 1 11,-11 z"
+            android:fillColor="#FF0B0B0F" />
+        <path android:pathData="M48,51 m-3.4,0 a3.4,3.4 0 1,0 6.8,0 a3.4,3.4 0 1,0 -6.8,0" android:fillColor="#FFFFFFFF" />
+        <path android:pathData="M61,51 m-3.4,0 a3.4,3.4 0 1,0 6.8,0 a3.4,3.4 0 1,0 -6.8,0" android:fillColor="#FFFFFFFF" />
+        <path android:pathData="M74,51 m-3.4,0 a3.4,3.4 0 1,0 6.8,0 a3.4,3.4 0 1,0 -6.8,0" android:fillColor="#FFFFFFFF" />
+    </group>
+</vector>
