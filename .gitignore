@@ -26,3 +26,8 @@ Thumbs.db
 
 # 本地调试
 *.log
+
+# 签名（绝不入库）
+keystore.properties
+*.jks
+*.keystore

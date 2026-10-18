@@ -5,6 +5,20 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization")
 }
 
+// 发布签名：从根目录 keystore.properties 读取（该文件不入库）；没有则回退 debug 签名
+// 简单键值解析，避免在 kts 里引入 java.util.Properties 的命名冲突
+val keystoreFile = rootProject.file("keystore.properties")
+val keystoreMap = mutableMapOf<String, String>()
+if (keystoreFile.exists()) {
+    keystoreFile.readLines().forEach { line ->
+        val idx = line.indexOf('=')
+        if (idx > 0) {
+            keystoreMap[line.substring(0, idx).trim()] = line.substring(idx + 1).trim()
+        }
+    }
+}
+val hasReleaseKey = keystoreMap.containsKey("storeFile")
+
 android {
     namespace = "com.friendsim.app"
     compileSdk = 37
@@ -19,10 +33,26 @@ android {
         ndk { abiFilters += listOf("arm64-v8a") }
     }
 
+    signingConfigs {
+        if (hasReleaseKey) {
+            create("release") {
+                storeFile = file(keystoreMap.getValue("storeFile"))
+                storePassword = keystoreMap.getValue("storePassword")
+                keyAlias = keystoreMap.getValue("keyAlias")
+                keyPassword = keystoreMap.getValue("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("debug")
+            isShrinkResources = false
+            signingConfig = if (hasReleaseKey) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
     }
 
@@ -79,7 +109,6 @@ dependencies {
 
     // 仅 debug：Chucker（通知栏看 API 请求 URL/Body/响应）
     debugImplementation("com.github.chuckerteam.chucker:library:4.3.1")
-    releaseImplementation("com.github.chuckerteam.chucker:library-no-op:4.3.1")
 
     testImplementation("junit:junit:4.13.2")
 }

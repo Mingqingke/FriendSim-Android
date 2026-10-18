@@ -31,6 +31,12 @@
 - 导出聊天长图、ZIP 一键备份/恢复（含照片与录音）
 - 深色模式适配、边到边布局
 
+## 下载与安装
+
+从 [Releases](https://github.com/) 下载最新的 `app-release.apk` 直接安装（Android 8.0+，arm64）。
+
+> 未上架任何应用商店；安装时系统可能提示"未知来源"，属正常。
+
 ## 构建
 
 需要 JDK 21、Android SDK 37。仓库不含 `local.properties`，本地新建一个：
@@ -40,8 +46,11 @@ sdk.dir=/path/to/android-sdk
 ```
 
 ```bash
-./gradlew assembleDebug
+./gradlew assembleDebug     # 调试包（带 Chucker 抓包）
+./gradlew assembleRelease   # 正式包（需 keystore.properties，否则退化为 debug 签名）
 ```
+
+发版流程见 [docs/RELEASING.md](docs/RELEASING.md)。
 
 本项目在 arm64 Linux（proot）环境下开发，用到的编译参数见 `gradle.properties`。
 
