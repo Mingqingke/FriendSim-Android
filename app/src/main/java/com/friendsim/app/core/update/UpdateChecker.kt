@@ -25,8 +25,16 @@ object UpdateChecker {
     data class Release(
         val version: String,
         val notes: String,
-        val apkUrl: String,
+        val apkUrls: List<String>,
         val pageUrl: String,
+    )
+
+    /** 国内可达的下载镜像，按顺序尝试。 */
+    private fun mirrors(url: String): List<String> = listOf(
+        url,
+        "https://ghfast.top/$url",
+        "https://ghproxy.net/$url",
+        "https://gh.llkk.cc/$url",
     )
 
     private val client = OkHttpClient.Builder()
@@ -39,7 +47,14 @@ object UpdateChecker {
     fun currentVersion(): String = BuildConfig.VERSION_NAME
 
     suspend fun check(): Release? = withContext(Dispatchers.IO) {
-        runCatching {
+        // 源 1：GitHub API
+        githubApi()?.let { return@withContext it }
+        // 源 2/3：仓库里的 update.json（jsDelivr / raw）
+        jsonMirror()?.let { return@withContext it }
+        null
+    }
+
+    private fun githubApi(): Release? = runCatching {
             val request = Request.Builder()
                 .url("https://api.github.com/repos/$REPO/releases/latest")
                 .header("Accept", "application/vnd.github+json")
@@ -59,9 +74,33 @@ object UpdateChecker {
                     .orEmpty()
                 if (tag.isBlank() || apk.isBlank()) return@runCatching null
                 if (compareVersions(tag, BuildConfig.VERSION_NAME) <= 0) return@runCatching null
-                Release(tag, notes, apk, page)
+                Release(tag, notes, mirrors(apk), page)
             }
         }.getOrNull()
+
+    /** 静态兜底：仓库根目录 update.json，走 jsDelivr 再走 raw。 */
+    private fun jsonMirror(): Release? {
+        val urls = listOf(
+            "https://cdn.jsdelivr.net/gh/$REPO@main/update.json",
+            "https://raw.githubusercontent.com/$REPO/main/update.json",
+        )
+        for (url in urls) {
+            val result = runCatching {
+                val request = Request.Builder().url(url).header("User-Agent", "FriendSim").build()
+                client.newCall(request).execute().use { response ->
+                    if (!response.isSuccessful) return@runCatching null
+                    val obj = json.parseToJsonElement(response.body.string()).jsonObject
+                    val tag = obj["version"]?.jsonPrimitive?.contentOrNull.orEmpty().removePrefix("v")
+                    if (tag.isBlank() || compareVersions(tag, BuildConfig.VERSION_NAME) <= 0) return@runCatching null
+                    val notes = obj["notes"]?.jsonPrimitive?.contentOrNull.orEmpty()
+                    val apks = obj["apk"]?.jsonArray?.mapNotNull { it.jsonPrimitive.contentOrNull }.orEmpty()
+                    if (apks.isEmpty()) return@runCatching null
+                    Release(tag, notes, apks, obj["page"]?.jsonPrimitive?.contentOrNull.orEmpty())
+                }
+            }.getOrNull()
+            if (result != null) return result
+        }
+        return null
     }
 
     /** 1.2.3 与 1.10.0 比较，返回正数表示 a 更新。 */
@@ -83,10 +122,12 @@ object UpdateChecker {
         onProgress: (Float) -> Unit,
     ): File? = withContext(Dispatchers.IO) {
         runCatching {
+            for (url in release.apkUrls) {
             val request = Request.Builder()
-                .url(release.apkUrl)
+                .url(url)
                 .header("User-Agent", "FriendSim/${BuildConfig.VERSION_NAME}")
                 .build()
+            val result = runCatching {
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) return@runCatching null
                 val body = response.body
@@ -107,6 +148,10 @@ object UpdateChecker {
                 if (target.length() < 1024 * 512) return@runCatching null
                 target
             }
+            }.getOrNull()
+            if (result != null) return@withContext result
+            }
+            null
         }.getOrNull()
     }
 }

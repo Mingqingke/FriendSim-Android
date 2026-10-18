@@ -183,59 +183,73 @@ private fun WaveProgress(progress: Float, color: Color) {
     val phase by transition.animateFloat(
         initialValue = 0f,
         targetValue = (2 * Math.PI).toFloat(),
-        animationSpec = infiniteRepeatable(tween(1400, easing = LinearEasing), RepeatMode.Restart),
+        animationSpec = infiniteRepeatable(tween(1600, easing = LinearEasing), RepeatMode.Restart),
         label = "phase",
     )
     val p = progress.coerceIn(0f, 1f)
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(44.dp)
-            .clip(RoundedCornerShape(14.dp))
-            .background(color.copy(alpha = 0.10f)),
+            .height(64.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(color.copy(alpha = 0.08f)),
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val h = size.height
             val w = size.width
             val waterY = h * (1f - p)
-            val amplitude = 5f * density
-            val wavePath = Path().apply {
-                moveTo(0f, waterY)
-                var x = 0f
-                while (x <= w) {
-                    val y = waterY + kotlin.math.sin((x / w * 3f * Math.PI).toFloat() + phase) * amplitude
-                    lineTo(x, y)
-                    x += 6f
-                }
-                lineTo(w, h)
-                lineTo(0f, h)
-                close()
-            }
-            drawPath(wavePath, color.copy(alpha = 0.55f))
+            val amp = 7f * density
 
-            // 第二层：错相位，制造层次
-            val back = Path().apply {
-                moveTo(0f, waterY)
-                var x = 0f
-                while (x <= w) {
-                    val y = waterY + kotlin.math.sin((x / w * 2.4f * Math.PI).toFloat() - phase * 0.8f) * amplitude * 0.7f
-                    lineTo(x, y)
-                    x += 6f
-                }
-                lineTo(w, h)
-                lineTo(0f, h)
-                close()
-            }
-            drawPath(back, color.copy(alpha = 0.28f))
+            // 后层水
+            drawPath(
+                buildWave(w, h, waterY, amp * 0.8f, phase * -0.7f + 1.2f, 2.2f),
+                color.copy(alpha = 0.22f),
+            )
+            // 前层水
+            drawPath(
+                buildWave(w, h, waterY, amp, phase, 3.2f),
+                color.copy(alpha = 0.45f),
+            )
+            // 波峰高光线
+            drawPath(
+                buildCrest(w, waterY, amp, phase, 3.2f),
+                color.copy(alpha = 0.9f),
+                style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2f * density),
+            )
         }
         Text(
             text = "${(p * 100).toInt()}%",
             modifier = Modifier.align(Alignment.Center),
-            fontSize = 12.sp,
-            color = MiuixTheme.colorScheme.onSurface.copy(alpha = 0.75f),
+            fontSize = 13.sp,
+            color = MiuixTheme.colorScheme.onSurface.copy(alpha = 0.55f),
         )
     }
 }
+
+private fun buildWave(w: Float, h: Float, waterY: Float, amp: Float, phase: Float, cycles: Float): Path =
+    Path().apply {
+        moveTo(0f, waterY)
+        var x = 0f
+        while (x <= w) {
+            val y = waterY + kotlin.math.sin(x / w * cycles * Math.PI.toFloat() + phase) * amp
+            lineTo(x, y)
+            x += 4f
+        }
+        lineTo(w, h)
+        lineTo(0f, h)
+        close()
+    }
+
+private fun buildCrest(w: Float, waterY: Float, amp: Float, phase: Float, cycles: Float): Path =
+    Path().apply {
+        moveTo(0f, waterY + kotlin.math.sin(phase) * amp)
+        var x = 0f
+        while (x <= w) {
+            val y = waterY + kotlin.math.sin(x / w * cycles * Math.PI.toFloat() + phase) * amp
+            lineTo(x, y)
+            x += 4f
+        }
+    }
 
 /** 把 release 正文里的 markdown 符号去掉，只留干净的短句。 */
 private fun plainNotes(raw: String): String {

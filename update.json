@@ -1,0 +1,10 @@
+{
+  "version": "2.9.0",
+  "notes": "更新界面新增多下载源，失败会自动换线路\n进度改成流动水面\n通知显示头像\n修复了一些已知问题",
+  "page": "https://github.com/Mingqingke/FriendSim-Android/releases/latest",
+  "apk": [
+    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.0/FriendSim-2.9.0.apk",
+    "https://ghfast.top/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.0/FriendSim-2.9.0.apk",
+    "https://ghproxy.net/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.0/FriendSim-2.9.0.apk"
+  ]
+}

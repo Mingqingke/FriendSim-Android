@@ -86,6 +86,16 @@ object ChatNotifier {
             .setContentText(text)
             .setStyle(style)
             .setContentIntent(openIntent)
+            .apply {
+                val file = runCatching {
+                    com.friendsim.app.AppGraph.friends.photoFile(friendId)
+                }.getOrNull()
+                file?.let { f ->
+                    runCatching {
+                        android.graphics.BitmapFactory.decodeFile(f.absolutePath)?.let { setLargeIcon(it) }
+                    }
+                }
+            }
             .addAction(replyAction)
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_MAX)
