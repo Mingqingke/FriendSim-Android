@@ -54,7 +54,7 @@ fun AboutScreen(onBack: () -> Unit) {
                     )
                     Spacer(Modifier.height(6.dp))
                     Text(
-                        text = "开发者: Linux",
+                        text = "开发者: 青",
                         fontSize = 14.sp,
                         textAlign = TextAlign.Center,
                         color = scheme.onSurfaceVariantSummary,
