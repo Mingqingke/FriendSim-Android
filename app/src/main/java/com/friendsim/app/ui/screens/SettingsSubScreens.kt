@@ -197,6 +197,24 @@ fun VoiceSettingsScreen(
                 summary = if (voiceReply) "回复会变成可播放的语音条" else null,
             )
             HorizontalDivider()
+            var probe by remember { mutableStateOf<String?>(null) }
+            var probing by remember { mutableStateOf(false) }
+            ArrowPreference(
+                title = if (probing) "正在检测…" else "克隆引擎自检",
+                summary = probe ?: "点一下确认桥接是否在线",
+                onClick = {
+                    if (!probing) {
+                        probing = true
+                        probe = null
+                        scope.launch {
+                            probe = AppGraph.voice.probeBridge(bridgeUrl)
+                            probing = false
+                            notify(probe ?: "")
+                        }
+                    }
+                },
+            )
+            HorizontalDivider()
             Footnote("连不上克隆引擎时自动改用系统语音。")
         }
 

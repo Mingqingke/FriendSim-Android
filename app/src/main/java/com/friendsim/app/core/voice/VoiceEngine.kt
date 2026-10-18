@@ -177,6 +177,19 @@ class VoiceEngine(private val context: Context) {
         }
     }
 
+    /** 自检克隆桥接：能连上就返回「连接正常」。 */
+    suspend fun probeBridge(bridgeUrl: String): String = withContext(Dispatchers.IO) {
+        runCatching {
+            val url = bridgeUrl.trim().trimEnd('/') + "/health"
+            val request = okhttp3.Request.Builder().url(url).build()
+            http.newCall(request).execute().use { response ->
+                if (response.isSuccessful) "连接正常" else "桥接返回 ${response.code}"
+            }
+        }.getOrElse { t ->
+            "连不上：${t.message?.take(30) ?: "未知错误"}"
+        }
+    }
+
     /** 试听用：直接系统语音，不走桥接（等初始化完成，最多 2.5 秒）。 */
     suspend fun speakSystem(text: String): Mode = speakWithSystem(text)
 

@@ -32,6 +32,10 @@ object ChatNotifier {
         manager.createNotificationChannel(
             NotificationChannel(CHANNEL_ID, "朋友消息", NotificationManager.IMPORTANCE_HIGH).apply {
                 description = "朋友发来的消息"
+                enableVibration(true)
+                enableLights(true)
+                setShowBadge(true)
+                lockscreenVisibility = android.app.Notification.VISIBILITY_PRIVATE
             },
         )
     }
@@ -75,7 +79,14 @@ object ChatNotifier {
             .setContentIntent(openIntent)
             .addAction(replyAction)
             .setAutoCancel(true)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setShowWhen(true)
+            .setWhen(System.currentTimeMillis())
+            .setOnlyAlertOnce(false)
+            .setGroup(CHANNEL_ID)
             .build()
 
         runCatching {
