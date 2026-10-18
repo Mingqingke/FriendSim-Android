@@ -20,6 +20,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent { FsApp() }
+        com.friendsim.app.core.notify.ProactiveScheduler.ensureScheduled(this)
         // 仅 debug：Chucker 用通知栏展示请求，需要通知权限
         if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= 33) {
             val granted = ContextCompat.checkSelfPermission(

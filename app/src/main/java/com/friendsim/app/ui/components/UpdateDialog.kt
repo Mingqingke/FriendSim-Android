@@ -1,0 +1,190 @@
+package com.friendsim.app.ui.components
+
+import android.content.Context
+import android.content.Intent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.core.content.FileProvider
+import com.friendsim.app.core.update.UpdateChecker
+import com.friendsim.app.ui.motion.bouncyClickable
+import kotlinx.coroutines.launch
+import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.theme.MiuixTheme
+
+/** 应用内更新：显示更新内容 → 下载（进度条）→ 拉起系统安装。 */
+@Composable
+fun UpdateDialog(
+    release: UpdateChecker.Release,
+    onDismiss: () -> Unit,
+) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val scheme = MiuixTheme.colorScheme
+
+    var downloading by remember { mutableStateOf(false) }
+    var progress by remember { mutableStateOf(0f) }
+    var file by remember { mutableStateOf<java.io.File?>(null) }
+    var error by remember { mutableStateOf<String?>(null) }
+
+    Dialog(
+        onDismissRequest = { if (!downloading) onDismiss() },
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 28.dp)
+                .clip(RoundedCornerShape(24.dp))
+                .background(scheme.surface)
+                .padding(horizontal = 20.dp, vertical = 22.dp),
+        ) {
+            Text(text = "发现新版本 v${release.version}", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = "当前 v${UpdateChecker.currentVersion()}",
+                fontSize = 12.sp,
+                color = scheme.onSurfaceVariantSummary,
+            )
+            Spacer(Modifier.height(14.dp))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 260.dp)
+                    .verticalScroll(rememberScrollState()),
+            ) {
+                Text(
+                    text = release.notes.ifBlank { "修复了一些问题。" },
+                    fontSize = 13.sp,
+                    lineHeight = 20.sp,
+                    color = scheme.onSurface.copy(alpha = 0.85f),
+                )
+            }
+
+            Spacer(Modifier.height(18.dp))
+
+            if (downloading || progress > 0f) {
+                // 进度条：从左到右填充
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(6.dp)
+                        .clip(RoundedCornerShape(3.dp))
+                        .background(scheme.onSurface.copy(alpha = 0.08f)),
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(progress.coerceIn(0f, 1f))
+                            .fillMaxHeight()
+                            .background(scheme.primary),
+                    )
+                }
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = if (file != null) "下载完成" else "正在下载 ${(progress * 100).toInt()}%",
+                    fontSize = 12.sp,
+                    color = scheme.onSurfaceVariantSummary,
+                )
+                Spacer(Modifier.height(14.dp))
+            }
+
+            error?.let {
+                Text(text = it, fontSize = 12.sp, color = scheme.error)
+                Spacer(Modifier.height(10.dp))
+            }
+
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(50.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(scheme.onSurface.copy(alpha = 0.06f))
+                        .bouncyClickable(enabled = !downloading, scaleDown = 0.96f) { onDismiss() },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(text = "稍后", fontSize = 15.sp, color = scheme.onSurface)
+                }
+
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(50.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(
+                            if (downloading) scheme.primary.copy(alpha = 0.5f) else scheme.primary,
+                        )
+                        .bouncyClickable(enabled = !downloading, scaleDown = 0.96f) {
+                            val ready = file
+                            if (ready != null) {
+                                runCatching { installApk(context, ready) }
+                                onDismiss()
+                            } else {
+                                downloading = true
+                                error = null
+                                scope.launch {
+                                    val result = UpdateChecker.download(context, release) { p ->
+                                        progress = p
+                                    }
+                                    downloading = false
+                                    file = result
+                                    if (result == null) {
+                                        error = "下载失败，稍后再试"
+                                        progress = 0f
+                                    }
+                                }
+                            }
+                        },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = when {
+                            downloading -> "下载中"
+                            file != null -> "安装"
+                            else -> "立即更新"
+                        },
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = scheme.onPrimary,
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun installApk(context: Context, file: java.io.File) {
+    val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+    val intent = Intent(Intent.ACTION_VIEW).apply {
+        setDataAndType(uri, "application/vnd.android.package-archive")
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+    }
+    context.startActivity(intent)
+}

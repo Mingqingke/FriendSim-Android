@@ -496,6 +496,13 @@ fun ChatScreen(
     }
 
     // 滚动：只在贴底时自动滚，否则提示"有新消息"
+    // 进页直接贴底：第一次看聊天应该是最新的，而不是从最早一条开始
+    LaunchedEffect(friendId) {
+        if (messages.isNotEmpty()) {
+            listState.scrollToItem(messages.lastIndex)
+        }
+    }
+
     val nearBottom by remember {
         derivedStateOf {
             val info = listState.layoutInfo
@@ -505,14 +512,20 @@ fun ChatScreen(
     }
     val density = LocalDensity.current
     val imeBottom = WindowInsets.ime.getBottom(density)
-    LaunchedEffect(imeBottom, messages.size, streaming, nearBottom) {
-        val count = messages.size + if (streaming) 1 else 0
-        if (count <= 0) return@LaunchedEffect
-        if (nearBottom) {
-            listState.animateScrollToItem(count - 1)
+    // 记录上一次的消息条数：只有「变多了」且用户不在底部时才提示
+    var lastCount by remember { mutableStateOf(messages.size) }
+    LaunchedEffect(messages.size, nearBottom) {
+        val grew = messages.size > lastCount
+        lastCount = messages.size
+        if (!grew) return@LaunchedEffect
+        if (nearBottom) showJump = false else showJump = true
+    }
+
+    LaunchedEffect(imeBottom, nearBottom, messages.size) {
+        if (nearBottom && messages.isNotEmpty()) {
+            val count = messages.size + if (streaming) 1 else 0
+            listState.animateScrollToItem((count - 1).coerceAtLeast(0))
             showJump = false
-        } else {
-            showJump = true
         }
     }
     LaunchedEffect(nearBottom) {

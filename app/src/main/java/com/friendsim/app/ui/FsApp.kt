@@ -114,6 +114,16 @@ fun FsApp() {
                     }
                 }
 
+                // 启动时静默检查更新（GitHub release）
+                var updateRelease by remember {
+                    mutableStateOf<com.friendsim.app.core.update.UpdateChecker.Release?>(null)
+                }
+                androidx.compose.runtime.LaunchedEffect(Unit) {
+                    runCatching {
+                        updateRelease = com.friendsim.app.core.update.UpdateChecker.check()
+                    }
+                }
+
                 val stack = remember { mutableStateListOf<Route>(Route.Splash) }
                 val current = stack.last()
                 val atRoot = current is Route.Friends || current is Route.Settings
@@ -252,6 +262,13 @@ fun FsApp() {
                             )
                         }
                     }
+                }
+
+                updateRelease?.let { release ->
+                    com.friendsim.app.ui.components.UpdateDialog(
+                        release = release,
+                        onDismiss = { updateRelease = null },
+                    )
                 }
 
                 // 提示：屏幕居中，不挡输入框
