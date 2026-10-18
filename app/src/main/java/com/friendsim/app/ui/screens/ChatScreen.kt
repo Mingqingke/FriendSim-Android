@@ -508,6 +508,10 @@ fun ChatScreen(
         }
     }
 
+    LaunchedEffect(friendId, messages.size) {
+        runCatching { store.markRead(friendId) }
+    }
+
     // 主动消息：隔 4 小时以上、不在免打扰时段
     LaunchedEffect(friendId) {
         runCatching {
@@ -1808,6 +1812,14 @@ private fun ChatInput(
                 textStyle = TextStyle(fontSize = 15.sp, color = scheme.onSurface),
                 maxLines = 5,
                 cursorBrush = SolidColor(accent),
+                keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                    imeAction = androidx.compose.ui.text.input.ImeAction.Send,
+                ),
+                keyboardActions = androidx.compose.foundation.text.KeyboardActions(
+                    onSend = {
+                        if (value.isNotBlank() && !sending) onSend()
+                    },
+                ),
             )
         }
         Spacer(Modifier.width(2.dp))

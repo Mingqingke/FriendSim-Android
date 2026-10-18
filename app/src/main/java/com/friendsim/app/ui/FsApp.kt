@@ -75,7 +75,7 @@ import top.yukonga.miuix.kmp.icon.extended.Settings
  */
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun FsApp() {
+fun FsApp(initialChatId: String? = null) {
     val app = com.friendsim.app.AppGraph
     val themeMode by app.settings.themeMode.collectAsState(initial = SettingsStore.THEME_SYSTEM)
     val dynamicColor by app.settings.dynamicColor.collectAsState(initial = true)
@@ -125,6 +125,15 @@ fun FsApp() {
                 }
 
                 val stack = remember { mutableStateListOf<Route>(Route.Splash) }
+                androidx.compose.runtime.LaunchedEffect(initialChatId) {
+                    if (!initialChatId.isNullOrBlank()) {
+                        // 从通知点进来：等启动页结束再跳
+                        kotlinx.coroutines.delay(1600)
+                        stack.clear()
+                        stack.add(Route.Friends)
+                        stack.add(Route.Chat(initialChatId))
+                    }
+                }
                 val current = stack.last()
                 val atRoot = current is Route.Friends || current is Route.Settings
 

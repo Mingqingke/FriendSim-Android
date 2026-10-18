@@ -19,7 +19,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContent { FsApp() }
+        val targetFriend = intent?.getStringExtra(com.friendsim.app.core.notify.ChatNotifier.EXTRA_FRIEND_ID)
+        setContent { FsApp(initialChatId = targetFriend) }
         com.friendsim.app.core.notify.ProactiveScheduler.ensureScheduled(this)
         // 通知权限（主动消息与聊天提醒都依赖它）
         if (Build.VERSION.SDK_INT >= 33) {

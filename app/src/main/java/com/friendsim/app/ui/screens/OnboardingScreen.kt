@@ -168,19 +168,6 @@ fun OnboardingScreen(onFinish: () -> Unit) {
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         StepDots(step = page, motionReduced = motion.reduced)
-                        Spacer(Modifier.weight(1f))
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(12.dp))
-                                .bouncyClickable(scaleDown = 0.94f) { complete() }
-                                .padding(horizontal = 10.dp, vertical = 6.dp),
-                        ) {
-                            Text(
-                                text = "跳过",
-                                fontSize = 13.sp,
-                                color = scheme.onSurfaceVariantSummary,
-                            )
-                        }
                     }
 
                     Spacer(Modifier.weight(1f))

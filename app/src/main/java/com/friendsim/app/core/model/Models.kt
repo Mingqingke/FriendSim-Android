@@ -39,6 +39,8 @@ data class Friend(
     var sharedMemories: String = "",
     val createdAt: Long = System.currentTimeMillis(),
     var lastActive: Long = 0L,
+    /** 上次打开聊天的时间，用于未读计数。 */
+    var lastReadAt: Long = 0L,
 ) {
     companion object {
         fun relationStage(affinity: Int): String = when {

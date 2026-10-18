@@ -71,11 +71,20 @@ object ChatNotifier {
             .setAllowGeneratedReplies(true)
             .build()
 
+        val person = androidx.core.app.Person.Builder()
+            .setName(friendName.ifBlank { "朋友" })
+            .build()
+        val style = NotificationCompat.MessagingStyle(
+            androidx.core.app.Person.Builder().setName("我").build(),
+        )
+            .setConversationTitle(friendName.ifBlank { "朋友" })
+            .addMessage(text, System.currentTimeMillis(), person)
+
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_stat_message)
             .setContentTitle(friendName.ifBlank { "朋友" })
             .setContentText(text)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(text))
+            .setStyle(style)
             .setContentIntent(openIntent)
             .addAction(replyAction)
             .setAutoCancel(true)

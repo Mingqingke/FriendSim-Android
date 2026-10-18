@@ -90,6 +90,20 @@ class FriendStore(private val context: Context) {
         upsert(f)
     }
 
+    /** 打开聊天后把已读时间推到最新。 */
+    suspend fun markRead(id: String) {
+        val f = find(id) ?: return
+        f.lastReadAt = System.currentTimeMillis()
+        upsert(f)
+    }
+
+    fun unreadCount(friendId: String): Int {
+        val friend = find(friendId) ?: return 0
+        return messages(friendId).count {
+            it.role == com.friendsim.app.core.model.Roles.FRIEND && it.at > friend.lastReadAt
+        }
+    }
+
     suspend fun touch(id: String) {
         val f = find(id) ?: return
         f.lastActive = System.currentTimeMillis()

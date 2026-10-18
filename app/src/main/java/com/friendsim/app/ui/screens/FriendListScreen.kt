@@ -97,6 +97,7 @@ fun FriendListScreen(
 
     // 只在朋友列表变化时读一次本地聊天尾部，避免每次重组都读文件
     val previews = remember(friends) { friends.associate { it.id to store.lastVisibleMessage(it.id) } }
+    val unread = remember(friends) { friends.associate { it.id to store.unreadCount(it.id) } }
 
     FsPage(
         title = "朋友",
@@ -127,6 +128,7 @@ fun FriendListScreen(
                     FriendRow(
                         friend = friend,
                         last = previews[friend.id],
+                        unread = unread[friend.id] ?: 0,
                         avatarModifier = sharedAvatarModifier(shared, visibility, friend.id),
                         onClick = { onOpenChat(friend) },
                         onEdit = { onEdit(friend) },
@@ -143,6 +145,7 @@ fun FriendListScreen(
 private fun FriendRow(
     friend: Friend,
     last: ChatMessage?,
+    unread: Int = 0,
     avatarModifier: androidx.compose.ui.Modifier = androidx.compose.ui.Modifier,
     onClick: () -> Unit,
     onEdit: () -> Unit,
@@ -191,6 +194,22 @@ private fun FriendRow(
                 )
             }
             Column(horizontalAlignment = Alignment.End) {
+                if (unread > 0) {
+                    Box(
+                        modifier = Modifier
+                            .size(18.dp)
+                            .clip(CircleShape)
+                            .background(MiuixTheme.colorScheme.primary),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = if (unread > 99) "99" else unread.toString(),
+                            fontSize = 10.sp,
+                            color = MiuixTheme.colorScheme.onPrimary,
+                        )
+                    }
+                    Spacer(Modifier.height(4.dp))
+                }
                 Text(
                     text = timeLabel(friend.lastActive),
                     fontSize = 11.sp,
