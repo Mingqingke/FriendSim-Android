@@ -75,6 +75,10 @@ sdk.dir=/path/to/android-sdk
 ./gradlew assembleRelease   # 正式包（需 keystore.properties）
 ```
 
+## 关键词
+
+Android 聊天应用 · AI 陪伴 · iMessage 气泡 · Jetpack Compose · 本地加密存储 · 免 Key 可用 · 开源 Android App
+
 ## 许可
 
 GPL-3.0，见 [LICENSE](LICENSE)。

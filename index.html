@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FriendSim — 一款可以让你跟朋友对话的简易聊天工具</title>
+<meta name="description" content="FriendSim 是一款安卓聊天应用，导入照片与声音就能和一个像 TA 的朋友继续聊。不用注册、不用填 API Key，断网也能回话。Android · Jetpack Compose · 本地加密存储。">
+<meta name="keywords" content="FriendSim, 聊天机器人, AI 陪伴, 安卓聊天应用, Android chat app, Jetpack Compose, iMessage 气泡, 本地大模型, DeepSeek, 开源, GPL-3.0">
+<link rel="canonical" href="https://mingqingke.github.io/FriendSim/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="FriendSim — 跟一个像 TA 的朋友继续聊">
+<meta property="og:description" content="导入一张照片、一段声音，就能继续聊下去。免注册、免 Key、断网可用。">
+<meta property="og:image" content="https://mingqingke.github.io/FriendSim/screenshots/02-hear.jpg">
+<style>
+  :root { --bg:#f7f7f9; --fg:#111; --muted:#666; --card:#fff; --accent:#4a5a8a; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0f0f12; --fg:#f2f2f4; --muted:#9a9aa2; --card:#17171b; --accent:#8c9bd4; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 72px 24px 96px; }
+  h1 { font-size: 40px; line-height:1.2; letter-spacing:-.5px; margin:0 0 12px; }
+  .sub { color:var(--muted); font-size:18px; margin:0 0 32px; }
+  .btns { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:56px; }
+  a.btn { display:inline-block; padding:12px 22px; border-radius:999px; text-decoration:none; font-weight:600; }
+  a.primary { background:var(--accent); color:#fff; }
+  a.ghost { border:1px solid rgba(128,128,128,.35); color:var(--fg); }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; }
+  .card { background:var(--card); border-radius:18px; padding:20px 22px; }
+  .card h3 { margin:0 0 6px; font-size:16px; }
+  .card p { margin:0; color:var(--muted); font-size:14px; }
+  .shots { display:flex; gap:12px; overflow-x:auto; margin:56px 0 0; padding-bottom:8px; }
+  .shots img { height:420px; border-radius:16px; }
+  footer { margin-top:64px; color:var(--muted); font-size:13px; }
+  code { background:rgba(128,128,128,.12); padding:2px 6px; border-radius:6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>FriendSim</h1>
+  <p class="sub">一款可以让你跟朋友对话的简易聊天工具<br>导入一张照片 一段声音 就能和一个像 TA 的朋友继续聊下去</p>
+
+  <div class="btns">
+    <a class="btn primary" href="https://github.com/Mingqingke/FriendSim/releases/latest">下载 APK</a>
+    <a class="btn ghost" href="https://github.com/Mingqingke/FriendSim">GitHub 源码</a>
+  </div>
+
+  <div class="grid">
+    <div class="card"><h3>不用配置</h3><p>不填 API Key 也能聊。自备 Key 优先，没有就走公共端点，再不行切本地预设，全程不打扰你。</p></div>
+    <div class="card"><h3>像一个具体的人</h3><p>关系 现状 性格 口头禅 喜好 雷区 专属回忆，都会拼进提示词。说到雷区会真的有情绪。</p></div>
+    <div class="card"><h3>会记得</h3><p>最近上下文和长期记忆分层保存，聊久了自动压成回忆，还有好感度和心境。</p></div>
+    <div class="card"><h3>手感</h3><p>iMessage 连续曲率气泡与泪滴尾巴、共享元素转场、弹簧动画、分级触感。</p></div>
+    <div class="card"><h3>数据在你手机里</h3><p>聊天记录加密保存，照片与录音不出设备，可以一键备份或彻底清除。</p></div>
+    <div class="card"><h3>开源</h3><p>GPL-3.0，Kotlin + Jetpack Compose，代码全在 GitHub。</p></div>
+  </div>
+
+  <div class="shots">
+    <img src="screenshots/02-hear.jpg" alt="引导页 听见">
+    <img src="screenshots/07-persona.jpg" alt="新建朋友 深度档案">
+    <img src="screenshots/08-appearance.jpg" alt="外观与美化">
+    <img src="screenshots/09-chat-settings.jpg" alt="对话设置">
+    <img src="screenshots/05-friends.jpg" alt="朋友列表">
+  </div>
+
+  <footer>
+    Android 8.0 以上 · arm64 · <code>com.friendsim.app</code> · GPL-3.0
+  </footer>
+</div>
+</body>
+</html>
