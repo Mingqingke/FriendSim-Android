@@ -144,6 +144,7 @@ import top.yukonga.miuix.kmp.icon.extended.Mic
 import top.yukonga.miuix.kmp.icon.extended.More
 import top.yukonga.miuix.kmp.icon.extended.Photos
 import top.yukonga.miuix.kmp.icon.extended.Play
+import top.yukonga.miuix.kmp.icon.extended.Search
 import top.yukonga.miuix.kmp.icon.extended.Send
 import top.yukonga.miuix.kmp.icon.extended.Stopwatch
 import top.yukonga.miuix.kmp.overlay.OverlayDialog
@@ -222,6 +223,8 @@ fun ChatScreen(
     var slow by remember { mutableStateOf(false) }
     var showJump by remember { mutableStateOf(false) }
     var replyAsVoice by remember { mutableStateOf(false) }
+    var searching by remember { mutableStateOf(false) }
+    var query by remember { mutableStateOf("") }
     val statuses = remember { mutableStateMapOf<String, String>() }
 
     val listState = rememberLazyListState()
@@ -616,16 +619,57 @@ fun ChatScreen(
         }
 
         Column(modifier = Modifier.fillMaxSize().imePadding()) {
-            ChatHeader(
-                friend = friend,
-                avatarModifier = sharedAvatarModifier(shared, visibility, friendId),
-                typing = streaming,
-                online = online,
-                lowMood = friend.mood == "LOW",
-                onBack = onBack,
-                onPoke = { poke() },
-                onMenu = { showHeaderMenu = true },
-            )
+            if (searching) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .statusBarsPadding()
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clip(RoundedCornerShape(18.dp))
+                            .background(MiuixTheme.colorScheme.onSurface.copy(alpha = 0.06f))
+                            .padding(horizontal = 14.dp, vertical = 10.dp),
+                    ) {
+                        if (query.isEmpty()) {
+                            Text(text = "搜索聊天记录", fontSize = 14.sp, color = MiuixTheme.colorScheme.onSurfaceVariantSummary)
+                        }
+                        BasicTextField(
+                            value = query,
+                            onValueChange = { query = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            textStyle = TextStyle(fontSize = 14.sp, color = MiuixTheme.colorScheme.onSurface),
+                            singleLine = true,
+                            cursorBrush = SolidColor(MiuixTheme.colorScheme.primary),
+                        )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .bouncyClickable(scaleDown = 0.94f) {
+                                searching = false
+                                query = ""
+                            }
+                            .padding(horizontal = 12.dp, vertical = 8.dp),
+                    ) {
+                        Text(text = "取消", fontSize = 14.sp, color = MiuixTheme.colorScheme.primary)
+                    }
+                }
+            } else {
+                ChatHeader(
+                    friend = friend,
+                    avatarModifier = sharedAvatarModifier(shared, visibility, friendId),
+                    typing = streaming,
+                    online = online,
+                    lowMood = friend.mood == "LOW",
+                    onBack = onBack,
+                    onPoke = { poke() },
+                    onMenu = { showHeaderMenu = true },
+                    onSearch = { searching = true },
+                )
+            }
 
             LazyColumn(
                 state = listState,
@@ -649,7 +693,12 @@ fun ChatScreen(
                     }
                 }
 
-                itemsIndexed(messages, key = { _, m -> m.id }) { index, message ->
+                val shown = if (searching && query.isNotBlank()) {
+                    messages.filter { it.text.contains(query, true) }
+                } else {
+                    messages
+                }
+                itemsIndexed(shown, key = { _, m -> m.id }) { index, message ->
                     val prev = messages.getOrNull(index - 1)
                     val next = messages.getOrNull(index + 1)
                     val sameAsPrev = prev?.role == message.role
@@ -1092,6 +1141,7 @@ private fun ChatHeader(
     onBack: () -> Unit,
     onPoke: () -> Unit,
     onMenu: () -> Unit,
+    onSearch: () -> Unit = {},
 ) {
     val scheme = MiuixTheme.colorScheme
     val haptics = LocalHapticFeedback.current
@@ -1163,7 +1213,10 @@ private fun ChatHeader(
                 Icon(imageVector = MiuixIcons.Back, contentDescription = "返回", tint = scheme.onSurface)
             }
         }
-        Row(modifier = Modifier.align(Alignment.TopEnd)) {
+        Row(modifier = Modifier.align(Alignment.TopEnd), verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = onSearch) {
+                Icon(imageVector = MiuixIcons.Search, contentDescription = "搜索", tint = scheme.onSurface)
+            }
             IconButton(onClick = onMenu) {
                 Icon(imageVector = MiuixIcons.More, contentDescription = "更多", tint = scheme.onSurface)
             }
@@ -1653,6 +1706,13 @@ private fun ChatInput(
         if (uri != null) onSendImage(uri)
     }
 
+    var emojiOpen by remember { mutableStateOf(false) }
+    val emojis = listOf(
+        "😀", "😂", "🥲", "😅", "🙂", "😴", "🤔", "😭", "😡", "🥰",
+        "😎", "🤗", "😮", "😑", "🙃", "😇", "🥺", "😳", "🤯", "😋",
+        "👍", "👏", "🙏", "💪", "👋", "🤝", "❤️", "💔", "✨", "🌙",
+    )
+
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission(),
     ) { granted ->
@@ -1750,6 +1810,47 @@ private fun ChatInput(
                 cursorBrush = SolidColor(accent),
             )
         }
+        Spacer(Modifier.width(2.dp))
+
+        // 表情
+        Box {
+            IconButton(onClick = { emojiOpen = !emojiOpen }) {
+                Text(text = "☺", fontSize = 20.sp, color = scheme.onSurface)
+            }
+            if (emojiOpen) {
+                androidx.compose.ui.window.Popup(
+                    onDismissRequest = { emojiOpen = false },
+                    properties = androidx.compose.ui.window.PopupProperties(focusable = true),
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .width(280.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(scheme.surface)
+                            .padding(8.dp),
+                    ) {
+                        emojis.chunked(6).forEach { row ->
+                            Row {
+                                row.forEach { e ->
+                                    Box(
+                                        modifier = Modifier
+                                            .size(44.dp)
+                                            .clip(RoundedCornerShape(10.dp))
+                                            .bouncyClickable(scaleDown = 0.86f) {
+                                                onValueChange(value + e)
+                                            },
+                                        contentAlignment = Alignment.Center,
+                                    ) {
+                                        Text(text = e, fontSize = 22.sp)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         Spacer(Modifier.width(4.dp))
 
         // 右侧：空态是"图片"，有文字时变"发送"
