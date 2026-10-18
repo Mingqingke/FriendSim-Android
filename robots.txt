@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mingqingke.github.io/FriendSim-Android/sitemap.xml

@@ -32,6 +32,23 @@
   footer { margin-top:64px; color:var(--muted); font-size:13px; }
   code { background:rgba(128,128,128,.12); padding:2px 6px; border-radius:6px; }
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "FriendSim",
+  "alternateName": "FriendSim-Android",
+  "applicationCategory": "SocialNetworkingApplication",
+  "operatingSystem": "Android 8.0+",
+  "url": "https://mingqingke.github.io/FriendSim-Android/",
+  "downloadUrl": "https://github.com/Mingqingke/FriendSim-Android/releases/latest",
+  "description": "一款可以让你跟朋友对话的简易聊天工具。导入照片与声音，就能和一个像 TA 的朋友继续聊；免注册、免 API Key、断网可用，聊天记录本地加密。",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY" },
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "author": { "@type": "Person", "name": "青" },
+  "inLanguage": ["zh-CN", "en"]
+}
+</script>
 </head>
 <body>
 <div class="wrap">
@@ -59,6 +76,22 @@
     <img src="screenshots/09-chat-settings.jpg" alt="对话设置">
     <img src="screenshots/05-friends.jpg" alt="朋友列表">
   </div>
+
+
+  <h2 style="margin-top:64px;font-size:22px">常见问题</h2>
+  <div class="grid">
+    <div class="card"><h3>需要填 API Key 吗？</h3><p>不用。默认走免费的公共端点，自己填 Key 只是让回复更像人，不填也照样能聊。</p></div>
+    <div class="card"><h3>断网还能用吗？</h3><p>能。网络不可用时会自动切到本机预设话术，聊天不会中断，也不会弹报错。</p></div>
+    <div class="card"><h3>聊天记录会上传吗？</h3><p>照片、录音、聊天记录都只在本机，记录本身是加密保存的。只有对话文本会发给对话端点。</p></div>
+    <div class="card"><h3>能换桌面图标吗？</h3><p>可以，外观里能切成计算器或备忘录，图标变了但数据不动。</p></div>
+  </div>
+
+  <h2 style="margin-top:56px;font-size:22px">English</h2>
+  <p style="color:var(--muted)">FriendSim is an open-source Android chat app that lets you keep talking to someone you miss.
+  Add a photo, a few seconds of their voice, and structured persona details — the relationship, how they speak,
+  what they love and hate — and the conversation starts to sound like them. It works without an API key,
+  falls back to fully offline replies when the network is gone, and keeps all chats encrypted on device.
+  Built with Kotlin and Jetpack Compose, licensed under GPL-3.0.</p>
 
   <footer>
     Android 8.0 以上 · arm64 · <code>com.friendsim.app</code> · GPL-3.0
