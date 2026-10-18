@@ -2,6 +2,13 @@ package com.friendsim.app.ui.components
 
 import android.content.Context
 import android.content.Intent
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,6 +16,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -26,6 +34,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -81,7 +91,7 @@ fun UpdateDialog(
                     .verticalScroll(rememberScrollState()),
             ) {
                 Text(
-                    text = release.notes.ifBlank { "修复了一些问题。" },
+                    text = plainNotes(release.notes).ifBlank { "修复了一些已知问题" },
                     fontSize = 13.sp,
                     lineHeight = 20.sp,
                     color = scheme.onSurface.copy(alpha = 0.85f),
@@ -91,21 +101,7 @@ fun UpdateDialog(
             Spacer(Modifier.height(18.dp))
 
             if (downloading || progress > 0f) {
-                // 进度条：从左到右填充
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(6.dp)
-                        .clip(RoundedCornerShape(3.dp))
-                        .background(scheme.onSurface.copy(alpha = 0.08f)),
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth(progress.coerceIn(0f, 1f))
-                            .fillMaxHeight()
-                            .background(scheme.primary),
-                    )
-                }
+                WaveProgress(progress = progress, color = scheme.primary)
                 Spacer(Modifier.height(8.dp))
                 Text(
                     text = if (file != null) "下载完成" else "正在下载 ${(progress * 100).toInt()}%",
@@ -178,6 +174,86 @@ fun UpdateDialog(
             }
         }
     }
+}
+
+/** 波浪进度：正弦水面随下载推进。 */
+@Composable
+private fun WaveProgress(progress: Float, color: Color) {
+    val transition = rememberInfiniteTransition(label = "wave")
+    val phase by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = (2 * Math.PI).toFloat(),
+        animationSpec = infiniteRepeatable(tween(1400, easing = LinearEasing), RepeatMode.Restart),
+        label = "phase",
+    )
+    val p = progress.coerceIn(0f, 1f)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(44.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .background(color.copy(alpha = 0.10f)),
+    ) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val h = size.height
+            val w = size.width
+            val waterY = h * (1f - p)
+            val amplitude = 5f * density
+            val wavePath = Path().apply {
+                moveTo(0f, waterY)
+                var x = 0f
+                while (x <= w) {
+                    val y = waterY + kotlin.math.sin((x / w * 3f * Math.PI).toFloat() + phase) * amplitude
+                    lineTo(x, y)
+                    x += 6f
+                }
+                lineTo(w, h)
+                lineTo(0f, h)
+                close()
+            }
+            drawPath(wavePath, color.copy(alpha = 0.55f))
+
+            // 第二层：错相位，制造层次
+            val back = Path().apply {
+                moveTo(0f, waterY)
+                var x = 0f
+                while (x <= w) {
+                    val y = waterY + kotlin.math.sin((x / w * 2.4f * Math.PI).toFloat() - phase * 0.8f) * amplitude * 0.7f
+                    lineTo(x, y)
+                    x += 6f
+                }
+                lineTo(w, h)
+                lineTo(0f, h)
+                close()
+            }
+            drawPath(back, color.copy(alpha = 0.28f))
+        }
+        Text(
+            text = "${(p * 100).toInt()}%",
+            modifier = Modifier.align(Alignment.Center),
+            fontSize = 12.sp,
+            color = MiuixTheme.colorScheme.onSurface.copy(alpha = 0.75f),
+        )
+    }
+}
+
+/** 把 release 正文里的 markdown 符号去掉，只留干净的短句。 */
+private fun plainNotes(raw: String): String {
+    if (raw.isBlank()) return ""
+    return raw.lineSequence()
+        .map { line ->
+            line.trim()
+                .removePrefix("###")
+                .removePrefix("##")
+                .removePrefix("#")
+                .removePrefix("- [ ]")
+                .removePrefix("- ")
+                .replace("**", "")
+                .replace("`", "")
+                .trim()
+        }
+        .filter { it.isNotEmpty() }
+        .joinToString("\n")
 }
 
 private fun installApk(context: Context, file: java.io.File) {
