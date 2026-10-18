@@ -2,6 +2,16 @@ package com.friendsim.app.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,6 +41,7 @@ import com.friendsim.app.ui.components.FsSpacing
 import com.friendsim.app.ui.components.FriendAvatar
 import com.friendsim.app.ui.components.Pill
 import com.friendsim.app.ui.components.section
+import com.friendsim.app.ui.motion.bouncyClickable
 import com.friendsim.app.ui.motion.sharedAvatarModifier
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.CardDefaults
@@ -38,12 +49,16 @@ import top.yukonga.miuix.kmp.basic.HorizontalDivider
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.HorizontalDivider
 import top.yukonga.miuix.kmp.basic.IconButton
+import top.yukonga.miuix.kmp.icon.extended.More
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.extended.Add
 import top.yukonga.miuix.kmp.icon.extended.ChevronForward
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.PressFeedbackType
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -60,6 +75,26 @@ fun FriendListScreen(
 ) {
     val store = AppGraph.friends
     val friends by store.friends.collectAsState()
+    var pendingDelete by remember { mutableStateOf<Friend?>(null) }
+    val scope = rememberCoroutineScope()
+
+    pendingDelete?.let { target ->
+        com.friendsim.app.ui.components.ConfirmDialog(
+            title = "删除朋友",
+            summary = "${target.name.ifBlank { "朋友" }} 的档案、照片、录音和聊天记录都会删除。",
+            confirmText = "删除",
+            danger = true,
+            onDismiss = { pendingDelete = null },
+            onConfirm = {
+                pendingDelete = null
+                scope.launch {
+                    AppGraph.friends.delete(target.id)
+                    AppGraph.memory.clear(target.id)
+                }
+            },
+        )
+    }
+
     // 只在朋友列表变化时读一次本地聊天尾部，避免每次重组都读文件
     val previews = remember(friends) { friends.associate { it.id to store.lastVisibleMessage(it.id) } }
 
@@ -94,7 +129,8 @@ fun FriendListScreen(
                         last = previews[friend.id],
                         avatarModifier = sharedAvatarModifier(shared, visibility, friend.id),
                         onClick = { onOpenChat(friend) },
-                        onLongClick = { onEdit(friend) },
+                        onEdit = { onEdit(friend) },
+                        onDelete = { pendingDelete = friend },
                     )
                 }
             }
@@ -109,8 +145,10 @@ private fun FriendRow(
     last: ChatMessage?,
     avatarModifier: androidx.compose.ui.Modifier = androidx.compose.ui.Modifier,
     onClick: () -> Unit,
-    onLongClick: () -> Unit,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit,
 ) {
+    var menu by remember { mutableStateOf(false) }
     val scheme = MiuixTheme.colorScheme
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -159,11 +197,51 @@ private fun FriendRow(
                     color = scheme.onSurfaceVariantSummary,
                 )
                 Spacer(Modifier.height(6.dp))
-                Icon(
-                    imageVector = MiuixIcons.ChevronForward,
-                    contentDescription = null,
-                    tint = scheme.onSurfaceVariantSummary,
-                )
+                Box {
+                    Box(
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .bouncyClickable(scaleDown = 0.9f) { menu = true }
+                            .padding(6.dp),
+                    ) {
+                        Icon(
+                            imageVector = MiuixIcons.More,
+                            contentDescription = "更多",
+                            tint = scheme.onSurfaceVariantSummary,
+                        )
+                    }
+                    if (menu) {
+                        Popup(
+                            onDismissRequest = { menu = false },
+                            properties = PopupProperties(focusable = true),
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(14.dp))
+                                    .background(scheme.surface)
+                                    .padding(vertical = 4.dp),
+                            ) {
+                                listOf("编辑档案", "删除").forEachIndexed { index, label ->
+                                    Box(
+                                        modifier = Modifier
+                                            .width(120.dp)
+                                            .bouncyClickable(scaleDown = 0.97f) {
+                                                menu = false
+                                                if (index == 0) onEdit() else onDelete()
+                                            }
+                                            .padding(horizontal = 16.dp, vertical = 10.dp),
+                                    ) {
+                                        Text(
+                                            text = label,
+                                            fontSize = 14.sp,
+                                            color = if (index == 1) scheme.error else scheme.onSurface,
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

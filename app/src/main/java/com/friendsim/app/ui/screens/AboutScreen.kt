@@ -78,6 +78,36 @@ fun AboutScreen(onBack: () -> Unit) {
             }
         }
 
+        section(title = "项目", key = "project") {
+            top.yukonga.miuix.kmp.preference.ArrowPreference(
+                title = "GitHub 仓库",
+                summary = "Mingqingke/FriendSim-Android",
+                onClick = {
+                    runCatching {
+                        val intent = android.content.Intent(
+                            android.content.Intent.ACTION_VIEW,
+                            android.net.Uri.parse("https://github.com/Mingqingke/FriendSim-Android"),
+                        ).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                        com.friendsim.app.AppGraph.app.startActivity(intent)
+                    }
+                },
+            )
+            top.yukonga.miuix.kmp.basic.HorizontalDivider()
+            top.yukonga.miuix.kmp.preference.ArrowPreference(
+                title = "检查更新",
+                summary = "在 Releases 里下载新版",
+                onClick = {
+                    runCatching {
+                        val intent = android.content.Intent(
+                            android.content.Intent.ACTION_VIEW,
+                            android.net.Uri.parse("https://github.com/Mingqingke/FriendSim-Android/releases/latest"),
+                        ).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                        com.friendsim.app.AppGraph.app.startActivity(intent)
+                    }
+                },
+            )
+        }
+
         section(title = "许可", key = "license") {
             CardBody {
                 Text(

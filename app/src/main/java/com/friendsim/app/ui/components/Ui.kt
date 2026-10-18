@@ -45,10 +45,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import com.friendsim.app.ui.motion.bouncyClickable
 import com.friendsim.app.ui.motion.rememberIosFling
 import com.friendsim.app.ui.motion.rubberBand
 import top.yukonga.miuix.kmp.basic.Button
 import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.Button
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.HorizontalDivider
 import top.yukonga.miuix.kmp.basic.Icon
@@ -322,9 +324,20 @@ fun EmptyCard(title: String, description: String, action: String? = null, onActi
                 lineHeight = 19.sp,
             )
             if (action != null && onAction != null) {
-                Spacer(Modifier.height(16.dp))
-                Button(onClick = onAction, insideMargin = PaddingValues(horizontal = 22.dp, vertical = 10.dp)) {
-                    Text(text = action)
+                Spacer(Modifier.height(18.dp))
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(22.dp))
+                        .background(MiuixTheme.colorScheme.primary.copy(alpha = 0.12f))
+                        .bouncyClickable(scaleDown = 0.95f, onClick = onAction)
+                        .padding(horizontal = 26.dp, vertical = 11.dp),
+                ) {
+                    Text(
+                        text = action,
+                        color = MiuixTheme.colorScheme.primary,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Medium,
+                    )
                 }
             }
         }

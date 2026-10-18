@@ -278,11 +278,6 @@ fun FriendEditScreen(
                         color = MiuixTheme.colorScheme.primary,
                     )
                     Spacer(Modifier.weight(1f))
-                    Text(
-                        text = "关系 现状 喜好 回忆",
-                        fontSize = 12.sp,
-                        color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
-                    )
                 }
 
                 androidx.compose.animation.AnimatedVisibility(

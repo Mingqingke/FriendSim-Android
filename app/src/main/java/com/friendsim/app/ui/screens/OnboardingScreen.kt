@@ -79,6 +79,13 @@ private val pages = listOf(
     Page("好久不见", "故事 从这里继续", "开启对话"),
 )
 
+private val notes = listOf(
+    "不用注册 不用填 Key",
+    "声音可以之后在档案里补上",
+    "照片只留在本机",
+    "从新建一个朋友开始",
+)
+
 /**
  * 引导：4 页纯介绍，不填任何东西。
  * 核心视觉用 SharedTransitionLayout 在页间连续形变（圆 → 声波球 → 相框 → 圆点），
@@ -154,6 +161,26 @@ fun OnboardingScreen(onFinish: () -> Unit) {
                         .padding(horizontal = 32.dp, vertical = 20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        StepDots(step = page, motionReduced = motion.reduced)
+                        Spacer(Modifier.weight(1f))
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(12.dp))
+                                .bouncyClickable(scaleDown = 0.94f) { complete() }
+                                .padding(horizontal = 10.dp, vertical = 6.dp),
+                        ) {
+                            Text(
+                                text = "跳过",
+                                fontSize = 13.sp,
+                                color = scheme.onSurfaceVariantSummary,
+                            )
+                        }
+                    }
+
                     Spacer(Modifier.weight(1f))
 
                     with(this@SharedTransitionLayout) {
@@ -183,6 +210,12 @@ fun OnboardingScreen(onFinish: () -> Unit) {
                         lineHeight = 22.sp,
                         textAlign = TextAlign.Center,
                         color = scheme.onSurfaceVariantSummary,
+                    )
+                    Spacer(Modifier.height(10.dp))
+                    Text(
+                        text = notes[page],
+                        fontSize = 12.sp,
+                        color = scheme.onSurfaceVariantSummary.copy(alpha = 0.7f),
                     )
 
                     Spacer(Modifier.weight(1f))
@@ -269,7 +302,7 @@ private fun MorphVisual(page: Int, accent: Color, modifier: Modifier = Modifier)
     val scheme = MiuixTheme.colorScheme
     val radiusPercent by animateFloatAsState(
         targetValue = when (page) {
-            2 -> 26f
+            2 -> 24f
             else -> 50f
         },
         animationSpec = MotionTokens.springDefault,
@@ -326,6 +359,27 @@ private fun MorphVisual(page: Int, accent: Color, modifier: Modifier = Modifier)
                         .background(Color.White.copy(alpha = 0.9f)),
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun StepDots(step: Int, motionReduced: Boolean) {
+    val scheme = MiuixTheme.colorScheme
+    Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
+        repeat(4) { index ->
+            val width by animateFloatAsState(
+                targetValue = if (index == step) 20f else 6f,
+                animationSpec = if (motionReduced) MotionTokens.instant else MotionTokens.springFast,
+                label = "dot$index",
+            )
+            Box(
+                modifier = Modifier
+                    .width(width.dp)
+                    .height(6.dp)
+                    .clip(RoundedCornerShape(3.dp))
+                    .background(if (index == step) scheme.primary else scheme.onSurface.copy(alpha = 0.15f)),
+            )
         }
     }
 }

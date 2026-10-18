@@ -27,6 +27,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -315,7 +316,18 @@ private fun ColorChips(
                             modifier = Modifier
                                 .size(34.dp)
                                 .clip(CircleShape)
-                                .background(color)
+                                .background(
+                                    if (value == "system") {
+                                        Brush.linearGradient(
+                                            listOf(
+                                                Color(0xFF0A84FF), Color(0xFFBF5AF2),
+                                                Color(0xFFFF375F), Color(0xFFFF9F0A),
+                                            ),
+                                        )
+                                    } else {
+                                        Brush.linearGradient(listOf(color, color))
+                                    },
+                                )
                                 .border(
                                     width = if (active) 2.dp else 1.dp,
                                     color = if (active) MiuixTheme.colorScheme.onSurface else ring,
