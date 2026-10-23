@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FriendSim 使用指南 — 安装、API、记忆与备份</title>
+<meta name="description" content="FriendSim 安装与升级、API 配置、角色与记忆、语音功能、备份恢复、更新失败的排查方法。">
+<link rel="canonical" href="https://mingqingke.github.io/FriendSim-Android/docs.html">
+<meta property="og:title" content="FriendSim 使用指南">
+<meta property="og:description" content="安装、API 配置、角色与记忆、语音、备份恢复与排错。">
+<meta property="og:url" content="https://mingqingke.github.io/FriendSim-Android/docs.html">
+<meta property="og:image" content="https://mingqingke.github.io/FriendSim-Android/assets/og.png">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<nav><div class="wrap">
+  <img src="assets/icon.svg" alt="FriendSim" width="26" height="26">
+  <span class="brand">FriendSim</span>
+  <div class="links"><a href="index.html">首页</a><a href="index.html#download">下载</a><a href="https://github.com/Mingqingke/FriendSim-Android">GitHub</a></div>
+</div></nav>
+<main class="wrap" style="padding-top:64px">
+  <h1 style="font-size:clamp(28px,4vw,42px)">使用指南</h1>
+  <p class="lede" style="text-align:left;margin:0 0 40px">装、用、出问题时先看这里。</p>
+
+  <h2>安装与升级</h2>
+  <p class="sub">下载 APK 后需要在系统设置里允许安装未知来源应用。升级直接覆盖安装，聊天记录、角色、记忆都会保留——只要签名没换。</p>
+
+  <h2>AI 配置</h2>
+  <p class="sub">设置 → 对话 → 高级：填 API Key 和 Base URL（兼容 OpenAI 格式）。不填就走公共端点，或者打开「仅离线」用本地的规则回复。</p>
+
+  <h2>角色与记忆</h2>
+  <p class="sub">新建角色时可以填关系、性格、喜好、雷区和共同回忆。记忆在设置 → 记忆管理里按角色查看，可以逐条删除，删掉的内容不会再进入对话上下文。</p>
+
+  <h2>语音</h2>
+  <p class="sub">按住输入框旁边的按钮说话，松手发送。要让对方用你的参考音色回话，需要在电脑上跑一个桥接服务并在设置 → 语音里填地址；连不上会退回系统朗读，这不是故障。</p>
+
+  <h2>备份与恢复</h2>
+  <p class="sub">设置 → 隐私与数据可以导出整包备份。恢复前会校验文件，覆盖范围会在确认框里写清楚。</p>
+
+  <h2>更新失败</h2>
+  <p class="sub">应用会依次尝试 GitHub 接口、jsDelivr 和 raw 三个来源，下载还会切换镜像。全都失败时去 Releases 页手动下载，用页面上的 SHA-256 核对后覆盖安装。</p>
+
+  <h2>隐私与许可</h2>
+  <p class="sub">数据只存在本机，用 Android Keystore 派生的密钥加密。项目以 GPL-3.0 发布，源码在 GitHub。</p>
+</main>
+<footer><div class="wrap"><span>FriendSim · 2026</span><a href="index.html">首页</a><a href="https://github.com/Mingqingke/FriendSim-Android">GitHub</a></div></footer>
+<script src="app.js" defer></script>
+</body>
+</html>

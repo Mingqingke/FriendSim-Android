@@ -1,101 +1,123 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FriendSim — 一款可以让你跟朋友对话的简易聊天工具</title>
-<meta name="description" content="FriendSim 是一款安卓聊天应用，导入照片与声音就能和一个像 TA 的朋友继续聊。不用注册、不用填 API Key，断网也能回话。Android · Jetpack Compose · 本地加密存储。">
-<meta name="keywords" content="FriendSim, 聊天机器人, AI 陪伴, 安卓聊天应用, Android chat app, Jetpack Compose, iMessage 气泡, 本地大模型, DeepSeek, 开源, GPL-3.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FriendSim — 一个可以跟朋友对话的 Android 应用</title>
+<meta name="description" content="FriendSim 是一个 Android 端的朋友对话模拟应用：可以自建角色、长期记忆、语音条与本地加密存储。开源，GPL-3.0，APK 直接下载。">
 <link rel="canonical" href="https://mingqingke.github.io/FriendSim-Android/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="FriendSim — 跟一个像 TA 的朋友继续聊">
-<meta property="og:description" content="导入一张照片、一段声音，就能继续聊下去。免注册、免 Key、断网可用。">
-<meta property="og:image" content="https://mingqingke.github.io/FriendSim-Android/screenshots/02-hear.jpg">
-<style>
-  :root { --bg:#f7f7f9; --fg:#111; --muted:#666; --card:#fff; --accent:#4a5a8a; }
-  @media (prefers-color-scheme: dark) { :root { --bg:#0f0f12; --fg:#f2f2f4; --muted:#9a9aa2; --card:#17171b; --accent:#8c9bd4; } }
-  * { box-sizing: border-box; }
-  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif; }
-  .wrap { max-width: 860px; margin: 0 auto; padding: 72px 24px 96px; }
-  h1 { font-size: 40px; line-height:1.2; letter-spacing:-.5px; margin:0 0 12px; }
-  .sub { color:var(--muted); font-size:18px; margin:0 0 32px; }
-  .btns { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:56px; }
-  a.btn { display:inline-block; padding:12px 22px; border-radius:999px; text-decoration:none; font-weight:600; }
-  a.primary { background:var(--accent); color:#fff; }
-  a.ghost { border:1px solid rgba(128,128,128,.35); color:var(--fg); }
-  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; }
-  .card { background:var(--card); border-radius:18px; padding:20px 22px; }
-  .card h3 { margin:0 0 6px; font-size:16px; }
-  .card p { margin:0; color:var(--muted); font-size:14px; }
-  .shots { display:flex; gap:12px; overflow-x:auto; margin:56px 0 0; padding-bottom:8px; }
-  .shots img { height:420px; border-radius:16px; }
-  footer { margin-top:64px; color:var(--muted); font-size:13px; }
-  code { background:rgba(128,128,128,.12); padding:2px 6px; border-radius:6px; }
-</style>
+<meta property="og:title" content="FriendSim — 一个可以跟朋友对话的 Android 应用">
+<meta property="og:description" content="自建角色、长期记忆、语音条、本地加密存储。开源 Android 应用，APK 直接下载。">
+<meta property="og:url" content="https://mingqingke.github.io/FriendSim-Android/">
+<meta property="og:image" content="https://mingqingke.github.io/FriendSim-Android/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="stylesheet" href="styles.css">
 <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "FriendSim",
-  "alternateName": "FriendSim-Android",
-  "applicationCategory": "SocialNetworkingApplication",
-  "operatingSystem": "Android 8.0+",
-  "url": "https://mingqingke.github.io/FriendSim-Android/",
-  "downloadUrl": "https://github.com/Mingqingke/FriendSim-Android/releases/latest",
-  "description": "一款可以让你跟朋友对话的简易聊天工具。导入照片与声音，就能和一个像 TA 的朋友继续聊；免注册、免 API Key、断网可用，聊天记录本地加密。",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY" },
-  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
-  "author": { "@type": "Person", "name": "青" },
-  "inLanguage": ["zh-CN", "en"]
-}
+{"@context":"https://schema.org","@type":"WebSite","name":"FriendSim","alternateName":["FriendSim Android","FriendSim APK"],"url":"https://mingqingke.github.io/FriendSim-Android/","inLanguage":"zh-CN"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"FriendSim","applicationCategory":"SocialNetworkingApplication","operatingSystem":"Android 8.0+","softwareVersion":"2.0.3","license":"https://www.gnu.org/licenses/gpl-3.0.html","downloadUrl":"https://github.com/Mingqingke/FriendSim-Android/releases/latest","codeRepository":"https://github.com/Mingqingke/FriendSim-Android","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"}}
 </script>
 </head>
 <body>
-<div class="wrap">
-  <h1>FriendSim</h1>
-  <p class="sub">一款可以让你跟朋友对话的简易聊天工具<br>导入一张照片 一段声音 就能和一个像 TA 的朋友继续聊下去</p>
+<nav><div class="wrap">
+  <img src="assets/icon.svg" alt="FriendSim 图标" width="26" height="26">
+  <span class="brand">FriendSim</span>
+  <div class="links">
+    <a href="#features">功能</a>
+    <a href="#look">界面</a>
+    <a href="#download">下载</a>
+    <a href="docs.html">使用</a>
+    <a href="https://github.com/Mingqingke/FriendSim-Android">GitHub</a>
+  </div>
+</div></nav>
 
-  <div class="btns">
+<header class="wrap">
+  <img class="logo" src="assets/icon.svg" alt="FriendSim 应用图标" width="96" height="96">
+  <h1>一个可以跟朋友对话的<br>Android 应用</h1>
+  <p class="lede">自己写角色设定，让它记住你说过的事，用语音聊，数据只留在本机。开源，无广告，不需要注册。</p>
+  <div class="actions">
+    <a class="btn primary" href="https://github.com/Mingqingke/FriendSim-Android/releases/latest">下载 Android 版</a>
+    <a class="btn" href="https://github.com/Mingqingke/FriendSim-Android">查看源码</a>
+  </div>
+  <p class="ver">最新版本 <strong id="ver">2.0.3</strong> · Android 8.0 及以上 · GPL-3.0</p>
+</header>
+
+<section id="features"><div class="wrap">
+  <h2>它能做什么</h2>
+  <p class="sub">下面这些都在应用里真实存在，不是预告。</p>
+  <div class="grid">
+    <div class="card"><h3>自己写的角色</h3><p>关系、性格、喜恶、雷区、共同回忆都可以填。填了雷区，它真的会在那句话上炸。</p></div>
+    <div class="card"><h3>记得住</h3><p>长期记忆分角色保存，聊得越久越像个熟人。记忆可以在设置里逐条查看和删除。</p></div>
+    <div class="card"><h3>语音条</h3><p>按住说话，对方可以回语音。合成优先走你自建的克隆桥接，连不上就退到系统朗读。</p></div>
+    <div class="card"><h3>像真人在打字</h3><p>回复延迟跟着心情走，文字一个字一个字冒出来，气泡尾巴和圆角按消息分组变化。</p></div>
+    <div class="card"><h3>数据只在本机</h3><p>聊天、角色、记忆、录音都存在本机，用 Keystore 派生的密钥加密，不上传服务器。</p></div>
+    <div class="card"><h3>三种脑袋</h3><p>自备 API Key、免 Key 公共端点、完全离线三档降级。没网也能聊。</p></div>
+    <div class="card"><h3>备份与导出</h3><p>整包加密备份，恢复前先校验；聊天可以导出成长图。</p></div>
+    <div class="card"><h3>图标伪装</h3><p>桌面显示成计算器或备忘录，点开才是它。</p></div>
+  </div>
+</div></section>
+
+<section id="look"><div class="wrap">
+  <h2>界面</h2>
+  <p class="sub">下面是用样式还原的界面示意图，配色和气泡形状与真实应用一致。</p>
+  <div class="phone"><div class="screen">
+    <div class="bubble them">今天怎么这么晚</div>
+    <div class="bubble me">忙完了 刚到家</div>
+    <div class="bubble them">饭吃了没</div>
+    <div class="bubble me">还没 你呢</div>
+    <div class="bubble them">等你一起</div>
+  </div></div>
+  <p class="caption">界面示意 · 实际以应用内为准</p>
+</div></section>
+
+<section id="download"><div class="wrap">
+  <h2>下载</h2>
+  <p class="sub">从 GitHub Releases 直接取 APK。装不上就点备用入口。</p>
+  <div class="dl">
+    <div class="kv"><span>当前版本</span><code>2.0.3 (versionCode 25)</code></div>
+    <div class="kv"><span>文件大小</span><code>9.77 MB</code></div>
+    <div class="kv"><span>发布日期</span><code>2026-10-23</code></div>
+    <div class="kv"><span>SHA-256</span><code>a57ce2a08e8527cfd4e086f7cfbf7db77a5012ab3e7d015d7e675277da46eb1f</code></div>
+  </div>
+  <div class="actions" style="margin-top:26px;justify-content:flex-start">
     <a class="btn primary" href="https://github.com/Mingqingke/FriendSim-Android/releases/latest">下载 APK</a>
-    <a class="btn ghost" href="https://github.com/Mingqingke/FriendSim-Android">GitHub 源码</a>
+    <a class="btn" href="https://github.com/Mingqingke/FriendSim-Android/releases">所有版本</a>
   </div>
+  <p class="sub" style="margin-top:22px;font-size:14px">安装前需要在系统里允许「安装未知来源应用」。应用需要麦克风权限才能发语音，不需要其它权限。下载下来的 APK 可以用上面的 SHA-256 自行核对。</p>
+</div></section>
 
+<section><div class="wrap">
+  <h2>开源</h2>
+  <p class="sub">代码在 GitHub 上，GPL-3.0。</p>
   <div class="grid">
-    <div class="card"><h3>不用配置</h3><p>不填 API Key 也能聊。自备 Key 优先，没有就走公共端点，再不行切本地预设，全程不打扰你。</p></div>
-    <div class="card"><h3>像一个具体的人</h3><p>关系 现状 性格 口头禅 喜好 雷区 专属回忆，都会拼进提示词。说到雷区会真的有情绪。</p></div>
-    <div class="card"><h3>会记得</h3><p>最近上下文和长期记忆分层保存，聊久了自动压成回忆，还有好感度和心境。</p></div>
-    <div class="card"><h3>手感</h3><p>iMessage 连续曲率气泡与泪滴尾巴、共享元素转场、弹簧动画、分级触感。</p></div>
-    <div class="card"><h3>数据在你手机里</h3><p>聊天记录加密保存，照片与录音不出设备，可以一键备份或彻底清除。</p></div>
-    <div class="card"><h3>开源</h3><p>GPL-3.0，Kotlin + Jetpack Compose，代码全在 GitHub。</p></div>
+    <div class="card"><h3>源码</h3><p><a href="https://github.com/Mingqingke/FriendSim-Android">Mingqingke/FriendSim-Android</a> — Kotlin + Jetpack Compose。</p></div>
+    <div class="card"><h3>问题与建议</h3><p><a href="https://github.com/Mingqingke/FriendSim-Android/issues">Issues</a>，提之前先搜一下有没有人提过。</p></div>
+    <div class="card"><h3>更新日志</h3><p><a href="https://github.com/Mingqingke/FriendSim-Android/releases">Releases</a> 里有每个版本的说明和安装包。</p></div>
   </div>
+</div></section>
 
-  <div class="shots">
-    <img src="screenshots/02-hear.jpg" alt="引导页 听见">
-    <img src="screenshots/07-persona.jpg" alt="新建朋友 深度档案">
-    <img src="screenshots/08-appearance.jpg" alt="外观与美化">
-    <img src="screenshots/09-chat-settings.jpg" alt="对话设置">
-    <img src="screenshots/05-friends.jpg" alt="朋友列表">
-  </div>
+<section><div class="wrap">
+  <h2>常见问题</h2>
+  <details><summary>需要 API Key 吗？</summary><p>不强制。可以填自己的 Key 走你选的模型，也可以走公共端点，或者干脆用离线模式——离线模式回复比较朴素，但完全不需要网络。</p></details>
+  <details><summary>聊天记录会上传吗？</summary><p>不会。数据存在本机并加密。只有当你配置了第三方模型服务时，对话内容才会发给你配置的那个服务。</p></details>
+  <details><summary>语音克隆要装东西吗？</summary><p>要。本机不跑克隆模型，需要在电脑上跑一个桥接服务，在设置里填地址。连不上时会退回系统朗读。</p></details>
+  <details><summary>怎么升级？</summary><p>应用内「关于 → 检查更新」会读 GitHub 上的版本信息，直接下载新包覆盖安装，数据不会丢。</p></details>
+  <details><summary>更新失败怎么办？</summary><p>多源会自动切换。还不行就从 Releases 页手动下载，SHA-256 可以对一下。</p></details>
+</div></section>
 
-
-  <h2 style="margin-top:64px;font-size:22px">常见问题</h2>
-  <div class="grid">
-    <div class="card"><h3>需要填 API Key 吗？</h3><p>不用。默认走免费的公共端点，自己填 Key 只是让回复更像人，不填也照样能聊。</p></div>
-    <div class="card"><h3>断网还能用吗？</h3><p>能。网络不可用时会自动切到本机预设话术，聊天不会中断，也不会弹报错。</p></div>
-    <div class="card"><h3>聊天记录会上传吗？</h3><p>照片、录音、聊天记录都只在本机，记录本身是加密保存的。只有对话文本会发给对话端点。</p></div>
-    <div class="card"><h3>能换桌面图标吗？</h3><p>可以，外观里能切成计算器或备忘录，图标变了但数据不动。</p></div>
-  </div>
-
-  <h2 style="margin-top:56px;font-size:22px">English</h2>
-  <p style="color:var(--muted)">FriendSim is an open-source Android chat app that lets you keep talking to someone you miss.
-  Add a photo, a few seconds of their voice, and structured persona details — the relationship, how they speak,
-  what they love and hate — and the conversation starts to sound like them. It works without an API key,
-  falls back to fully offline replies when the network is gone, and keeps all chats encrypted on device.
-  Built with Kotlin and Jetpack Compose, licensed under GPL-3.0.</p>
-
-  <footer>
-    Android 8.0 以上 · arm64 · <code>com.friendsim.app</code> · GPL-3.0
-  </footer>
-</div>
+<footer><div class="wrap">
+  <span>FriendSim · 2026</span>
+  <a href="https://github.com/Mingqingke/FriendSim-Android">GitHub</a>
+  <a href="docs.html">使用指南</a>
+  <a href="https://github.com/Mingqingke/FriendSim-Android/releases">下载</a>
+  <a href="https://github.com/Mingqingke/FriendSim-Android/issues">反馈</a>
+  <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPL-3.0</a>
+  <span style="margin-left:auto">不收集访问数据，没有第三方统计脚本</span>
+</div></footer>
+<script src="app.js" defer></script>
 </body>
 </html>
