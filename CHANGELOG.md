@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.0.0 — 2026-10-23（显示版本基线）
+
+> 显示版本号重新起算为 2.0.0，代码基线是原 2.9.0，versionCode 22（高于 21，可覆盖升级）。
+
+- 重写聊天气泡几何：路径全部落在 bounds 内，尾巴三段贝塞尔与侧边相切
+- 录音停止时先 join 采集循环，修复末尾丢帧；时长判断不再误报 0
+- 克隆合成结果用 MediaMetadataRetriever 校验可播，失败返回真实原因
+- 更新判断改为版本清单里的 `code`（versionCode），不再依赖 versionName
+- 动态取色默认关闭，其余设置保持不变
+
 ## v2.9.0 — 2026-10-18
 
 - 更新支持多源：GitHub API → jsDelivr/raw 的 update.json，下载失败自动换镜像

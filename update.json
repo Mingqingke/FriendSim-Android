@@ -1,10 +1,11 @@
 {
-  "version": "2.9.0",
-  "notes": "更新界面新增多下载源，失败会自动换线路\n进度改成流动水面\n通知显示头像\n修复了一些已知问题",
+  "version": "2.0.0",
+  "code": 22,
+  "notes": "重做聊天气泡的轮廓与尾巴\n修复录音末尾丢帧与时长误判\n克隆合成结果改为真实可播校验\n动态取色默认关闭",
   "page": "https://github.com/Mingqingke/FriendSim-Android/releases/latest",
   "apk": [
-    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.0/FriendSim-2.9.0.apk",
-    "https://ghfast.top/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.0/FriendSim-2.9.0.apk",
-    "https://ghproxy.net/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.0/FriendSim-2.9.0.apk"
+    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.0.0/FriendSim-2.0.0.apk",
+    "https://ghfast.top/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.0.0/FriendSim-2.0.0.apk",
+    "https://ghproxy.net/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.0.0/FriendSim-2.0.0.apk"
   ]
 }

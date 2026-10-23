@@ -7,6 +7,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import okhttp3.OkHttpClient
@@ -73,8 +74,11 @@ object UpdateChecker {
                     ?.get("browser_download_url")?.jsonPrimitive?.contentOrNull
                     .orEmpty()
                 if (tag.isBlank() || apk.isBlank()) return@runCatching null
-                if (compareVersions(tag, BuildConfig.VERSION_NAME) <= 0) return@runCatching null
-                Release(tag, notes, mirrors(apk), page)
+                // 显示版本号已经改基线（2.0.0），不能再拿 versionName 比大小，
+                // 一律用 versionCode 判断是否更新。
+                val remoteCode = codeFromNotes(notes)
+                if (remoteCode <= BuildConfig.VERSION_CODE) return@runCatching null
+                Release(tag, cleanNotes(notes), mirrors(apk), page)
             }
         }.getOrNull()
 
@@ -91,7 +95,8 @@ object UpdateChecker {
                     if (!response.isSuccessful) return@runCatching null
                     val obj = json.parseToJsonElement(response.body.string()).jsonObject
                     val tag = obj["version"]?.jsonPrimitive?.contentOrNull.orEmpty().removePrefix("v")
-                    if (tag.isBlank() || compareVersions(tag, BuildConfig.VERSION_NAME) <= 0) return@runCatching null
+                    val code = obj["code"]?.jsonPrimitive?.intOrNull ?: 0
+                    if (tag.isBlank() || code <= BuildConfig.VERSION_CODE) return@runCatching null
                     val notes = obj["notes"]?.jsonPrimitive?.contentOrNull.orEmpty()
                     val apks = obj["apk"]?.jsonArray?.mapNotNull { it.jsonPrimitive.contentOrNull }.orEmpty()
                     if (apks.isEmpty()) return@runCatching null
@@ -102,6 +107,15 @@ object UpdateChecker {
         }
         return null
     }
+
+    /** release body 里的 `code=22` 行，用来做更新判断；同时从正文中隐藏。 */
+    private fun codeFromNotes(notes: String): Int =
+        Regex("(?m)^\\s*code\\s*=\\s*(\\d+)").find(notes)?.groupValues?.get(1)?.toIntOrNull() ?: 0
+
+    private fun cleanNotes(notes: String): String =
+        notes.lineSequence()
+            .filterNot { it.trim().matches(Regex("(?i)\\s*code\\s*=.*")) }
+            .joinToString("\n")
 
     /** 1.2.3 与 1.10.0 比较，返回正数表示 a 更新。 */
     fun compareVersions(a: String, b: String): Int {

@@ -45,6 +45,11 @@ class VoiceEngine(private val context: Context) {
     private val readyFlow = kotlinx.coroutines.flow.MutableStateFlow(false)
     private var player: MediaPlayer? = null
 
+    /** 最近一次克隆失败的真实原因，给界面显示，不吞掉。 */
+    @Volatile
+    var lastError: String? = null
+        private set
+
     fun prepareSystemTts() {
         if (systemTts != null) return
         systemTts = TextToSpeech(context.applicationContext) { status ->
@@ -113,15 +118,41 @@ class VoiceEngine(private val context: Context) {
                     .build()
                 val request = Request.Builder().url(url).post(body).build()
                 http.newCall(request).execute().use { response ->
-                    if (!response.isSuccessful) return@runCatching null
+                    if (!response.isSuccessful) {
+                        lastError = "桥接返回 ${response.code}"
+                        return@runCatching null
+                    }
                     val bytes = response.body.bytes()
-                    if (bytes.size < 512) return@runCatching null
+                    if (bytes.size < 512) {
+                        lastError = "桥接返回空音频"
+                        return@runCatching null
+                    }
                     val out = File(context.cacheDir, "tts_${System.currentTimeMillis()}.wav")
                     out.writeBytes(bytes)
+                    // 真校验：能用系统解码器读出时长才算合成成功
+                    if (!isPlayable(out)) {
+                        lastError = "返回的不是有效音频"
+                        out.delete()
+                        return@runCatching null
+                    }
+                    lastError = null
                     out
                 }
             }.getOrNull()
         }
+
+    /** 用系统解码器验一下这段字节是不是能播的音频。 */
+    private fun isPlayable(file: File): Boolean = runCatching {
+        val retriever = android.media.MediaMetadataRetriever()
+        try {
+            retriever.setDataSource(file.absolutePath)
+            val ms = retriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_DURATION)
+                ?.toLongOrNull() ?: 0L
+            ms > 150L
+        } finally {
+            runCatching { retriever.release() }
+        }
+    }.getOrDefault(false)
 
     private suspend fun speakWithSystem(text: String): Mode {
         prepareSystemTts()

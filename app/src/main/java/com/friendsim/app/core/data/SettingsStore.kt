@@ -28,7 +28,7 @@ data class EngineConfig(
     val ttsMode: String = "BRIDGE",
     val autoSpeak: Boolean = false,
     val themeMode: String = "SYSTEM",
-    val dynamicColor: Boolean = true,
+    val dynamicColor: Boolean = false,
     val bubbleStyle: Boolean = true,
     val onboarded: Boolean = false,
     val chatBackground: String = "",
@@ -134,7 +134,7 @@ class SettingsStore(private val context: Context) {
     val autoSpeak: Flow<Boolean> = context.fsStore.data.map { it[Key.autoSpeak] ?: false }
     val voiceReply: Flow<Boolean> = context.fsStore.data.map { it[Key.voiceReply] ?: false }
     val themeMode: Flow<String> = context.fsStore.data.map { it[Key.themeMode] ?: "SYSTEM" }
-    val dynamicColor: Flow<Boolean> = context.fsStore.data.map { it[Key.dynamicColor] ?: true }
+    val dynamicColor: Flow<Boolean> = context.fsStore.data.map { it[Key.dynamicColor] ?: false }
 
     /** 外观偏好总入口。 */
     val appearance: Flow<AppearancePrefs> = context.fsStore.data.map { p ->
@@ -209,7 +209,7 @@ class SettingsStore(private val context: Context) {
             ttsMode = p[Key.ttsMode] ?: "BRIDGE",
             autoSpeak = p[Key.autoSpeak] ?: false,
             themeMode = p[Key.themeMode] ?: "SYSTEM",
-            dynamicColor = p[Key.dynamicColor] ?: true,
+            dynamicColor = p[Key.dynamicColor] ?: false,
             bubbleStyle = p[Key.bubbleStyle] ?: true,
             onboarded = p[Key.onboarded] ?: false,
             chatBackground = p[Key.bgImage] ?: "",

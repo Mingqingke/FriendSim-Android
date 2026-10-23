@@ -37,6 +37,8 @@ class Recorder(private val context: Context) {
     private var voicedChunks = 0
     private var totalChunks = 0
 
+    @Volatile private var stopping = false
+
     fun hasPermission(): Boolean = ContextCompat.checkSelfPermission(
         context,
         Manifest.permission.RECORD_AUDIO,
@@ -82,6 +84,7 @@ class Recorder(private val context: Context) {
         amplitudes.value = emptyList()
         level.value = 0f
         elapsedMs.value = 0L
+        stopping = false
         recording.value = true
 
         job = scope.launch(Dispatchers.IO) {
@@ -90,7 +93,7 @@ class Recorder(private val context: Context) {
             val startedAt = System.currentTimeMillis()
             try {
                 recorder.startRecording()
-                while (isActive) {
+                while (isActive && !stopping) {
                     val read = runCatching { recorder.read(buffer, 0, buffer.size) }.getOrDefault(0)
                     if (read <= 0) {
                         kotlinx.coroutines.delay(10)
@@ -129,10 +132,12 @@ class Recorder(private val context: Context) {
 
     /** 停止并封成 WAV；返回录音时长（毫秒）。 */
     suspend fun stop(): Long = withContext(Dispatchers.IO) {
-        job?.cancel()
+        // 先让采集停止，等录音循环把最后一块写完，再封 WAV（否则尾巴必丢）
+        stopping = true
+        runCatching { record?.stop() }
+        kotlinx.coroutines.withTimeoutOrNull(1500L) { job?.join() }
         job = null
         recording.value = false
-        runCatching { record?.stop() }
         runCatching { record?.release() }
         record = null
         AudioFocusHelper.restoreRoute(context)
@@ -145,6 +150,7 @@ class Recorder(private val context: Context) {
 
         if (pcmFile == null || out == null || !pcmFile.exists()) return@withContext 0L
         val dataBytes = pcmFile.length()
+        // 16kHz/16bit/单声道：每毫秒 32 字节
         val duration = dataBytes * 1000L / (16_000L * 2L)
         runCatching {
             RandomAccessFile(out, "rw").use { raf ->
@@ -155,11 +161,12 @@ class Recorder(private val context: Context) {
         }
         pcmFile.delete()
 
-        // 有效语音时长（用于静音检测提示）
-        if (totalChunks > 0 && voicedChunks == 0) 0L else duration
+        // 时长照实返回；是否「几乎全是静音」交给上层提示，不再伪装成录音失败
+        if (dataBytes < 3L * 16000L * 2L / 10L) 0L else duration
     }
 
     fun cancel() {
+        stopping = true
         job?.cancel()
         job = null
         recording.value = false
