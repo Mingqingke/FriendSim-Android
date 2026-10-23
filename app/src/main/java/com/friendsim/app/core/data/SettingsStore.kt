@@ -19,7 +19,7 @@ private val Context.fsStore: DataStore<Preferences> by preferencesDataStore(name
 data class EngineConfig(
     val apiKey: String = "",
     val baseUrl: String = "https://api.deepseek.com/v1",
-    val model: String = "deepseek-v4-flash-1017",
+    val model: String = "deepseek-flash",
     val offlineOnly: Boolean = false,
     val allowPublic: Boolean = true,
     val privacyAck: Boolean = false,
@@ -134,7 +134,7 @@ class SettingsStore(private val context: Context) {
 
     val apiKey: Flow<String> = context.fsStore.data.map { it[Key.apiKey] ?: "" }
     val baseUrl: Flow<String> = context.fsStore.data.map { it[Key.baseUrl] ?: "https://api.deepseek.com/v1" }
-    val model: Flow<String> = context.fsStore.data.map { it[Key.model] ?: "deepseek-v4-flash-1017" }
+    val model: Flow<String> = context.fsStore.data.map { it[Key.model] ?: "deepseek-flash" }
     val offlineOnly: Flow<Boolean> = context.fsStore.data.map { it[Key.offlineOnly] ?: false }
     val allowPublic: Flow<Boolean> = context.fsStore.data.map { it[Key.allowPublic] ?: true }
     val privacyAck: Flow<Boolean> = context.fsStore.data.map { it[Key.privacyAck] ?: false }
@@ -218,7 +218,7 @@ class SettingsStore(private val context: Context) {
         return EngineConfig(
             apiKey = p[Key.apiKey] ?: "",
             baseUrl = p[Key.baseUrl] ?: "https://api.deepseek.com/v1",
-            model = p[Key.model] ?: "deepseek-v4-flash-1017",
+            model = p[Key.model] ?: "deepseek-flash",
             offlineOnly = p[Key.offlineOnly] ?: false,
             allowPublic = p[Key.allowPublic] ?: true,
             privacyAck = p[Key.privacyAck] ?: false,
@@ -243,7 +243,7 @@ class SettingsStore(private val context: Context) {
 
     companion object {
         const val DEFAULT_BASE_URL = "https://api.deepseek.com/v1"
-        const val DEFAULT_MODEL = "deepseek-v4-flash-1017"
+        const val DEFAULT_MODEL = "deepseek-flash"
         const val DEFAULT_BRIDGE = "http://127.0.0.1:9880"
 
         const val TTS_BRIDGE = "BRIDGE"

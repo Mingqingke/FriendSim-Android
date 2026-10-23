@@ -1,13 +1,13 @@
 {
-  "version": "2.10.1",
-  "display": "2.4.2",
-  "code": 32,
-  "notes": "换成新的应用图标\n单色主题图标同步\n修复了一些已知问题",
-  "page": "https://github.com/Mingqingke/FriendSim-Android/releases/tag/v2.4.2",
+  "version": "2.10.2",
+  "display": "2.4.3",
+  "code": 33,
+  "notes": "模型可选 Flash 与 V4 Pro\nFlash 能直接读图\n去掉了开机动画\n修复了一些已知问题",
+  "page": "https://github.com/Mingqingke/FriendSim-Android/releases/tag/v2.4.3",
   "apk": [
-    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.10.1/FriendSim-2.10.1.apk",
-    "https://ghfast.top/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.10.1/FriendSim-2.10.1.apk",
-    "https://ghproxy.net/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.10.1/FriendSim-2.10.1.apk",
-    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.4.2/FriendSim-2.4.2.apk"
+    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.10.2/FriendSim-2.10.2.apk",
+    "https://ghfast.top/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.10.2/FriendSim-2.10.2.apk",
+    "https://ghproxy.net/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.10.2/FriendSim-2.10.2.apk",
+    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.4.3/FriendSim-2.4.3.apk"
   ]
 }

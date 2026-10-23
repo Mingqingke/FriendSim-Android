@@ -36,19 +36,19 @@ fun SplashScreen(onDone: () -> Unit) {
     val prefs = LocalMotionPrefs.current
     var shown by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
-        targetValue = if (shown) 1f else 0.7f,
+        targetValue = if (shown) 1f else 1f,
         animationSpec = if (prefs.reduced) MotionTokens.instant else MotionTokens.springSlow,
         label = "splashScale",
     )
     val alpha by animateFloatAsState(
-        targetValue = if (shown) 1f else 0f,
+        targetValue = if (shown) 1f else 1f,
         animationSpec = if (prefs.reduced) MotionTokens.instant else MotionTokens.fade,
         label = "splashAlpha",
     )
 
     LaunchedEffect(Unit) {
         shown = true
-        delay(if (prefs.reduced) 400 else 1500)
+        delay(if (prefs.reduced) 0 else 150)
         onDone()
     }
 

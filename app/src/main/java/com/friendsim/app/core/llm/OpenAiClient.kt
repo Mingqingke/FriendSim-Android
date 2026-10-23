@@ -53,7 +53,7 @@ class OpenAiClient {
         imageDataUrl: String? = null,
     ): Flow<String> = flow {
         val payload = buildJsonObject {
-            put("model", model.ifBlank { "deepseek-v4-flash-1017" })
+            put("model", model.ifBlank { "deepseek-flash" })
             put("stream", true)
             put("temperature", 0.85)
             put("max_tokens", maxTokens)
@@ -136,7 +136,7 @@ class OpenAiClient {
         kotlinx.coroutines.withContext(Dispatchers.IO) {
             runCatching {
                 val payload = buildJsonObject {
-                    put("model", model.ifBlank { "deepseek-v4-flash-1017" })
+                    put("model", model.ifBlank { "deepseek-flash" })
                     put("max_tokens", 1)
                     putJsonArray("messages") {
                         addJsonObject {

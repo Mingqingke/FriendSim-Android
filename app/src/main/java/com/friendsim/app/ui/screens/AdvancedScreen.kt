@@ -30,6 +30,14 @@ import top.yukonga.miuix.kmp.preference.ArrowPreference
 import top.yukonga.miuix.kmp.basic.HorizontalDivider
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
 
 /** 三级页：高级设置（Key / Base URL / 模型 / 连通性验证 + 端点状态）。 */
 @Composable
@@ -102,6 +110,31 @@ fun AdvancedScreen(onBack: () -> Unit, notify: (String) -> Unit) {
                     label = "模型",
                     placeholder = SettingsStore.DEFAULT_MODEL,
                 )
+                Spacer(Modifier.height(8.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    listOf(
+                        "deepseek-flash" to "Flash · 能看图",
+                        "deepseek-v4-pro" to "V4 Pro · 纯文本",
+                    ).forEach { (id, label) ->
+                        val on = model == id
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(50))
+                                .background(if (on) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.surfaceContainerHigh)
+                                .clickable {
+                                    model = id
+                                    scope.launch { settings.setModel(id) }
+                                }
+                                .padding(horizontal = 14.dp, vertical = 7.dp),
+                        ) {
+                            Text(
+                                text = label,
+                                fontSize = 12.5.sp,
+                                color = if (on) MiuixTheme.colorScheme.onPrimary else MiuixTheme.colorScheme.onSurface,
+                            )
+                        }
+                    }
+                }
                 Spacer(Modifier.height(FsSpacing.Item))
                 Button(
                     onClick = {
