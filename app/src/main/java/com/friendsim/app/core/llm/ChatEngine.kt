@@ -71,7 +71,7 @@ class ChatEngine(private val client: OpenAiClient = OpenAiClient()) {
                 history = emptyList(),
                 userText = "转写这张聊天截图",
                 imageDataUrl = dataUrl,
-                maxTokens = 1200,
+                maxTokens = 2500,
             ).collect { delta -> builder.append(delta) }
         }
         return builder.toString().trim().takeIf { it.isNotBlank() }

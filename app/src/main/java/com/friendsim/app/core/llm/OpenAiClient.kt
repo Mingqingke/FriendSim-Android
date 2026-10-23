@@ -49,7 +49,7 @@ class OpenAiClient {
         systemPrompt: String,
         history: List<Pair<String, String>>,
         userText: String,
-        maxTokens: Int = 300,
+        maxTokens: Int = 1200,
         imageDataUrl: String? = null,
     ): Flow<String> = flow {
         val payload = buildJsonObject {
