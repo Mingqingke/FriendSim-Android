@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>FriendSim — 一个可以跟朋友对话的 Android 应用</title>
-<meta name="description" content="FriendSim 是一个 Android 端的朋友对话模拟应用：可以自建角色、长期记忆、语音条与本地加密存储。开源，GPL-3.0，APK 直接下载。">
+<title>FriendSim — 可以跟朋友对话的 Android 应用</title>
+<meta name="description" content="FriendSim 是开源的 Android 对话应用：自己写角色设定，长期记忆，语音条，本地加密存储。APK 直接下载，无广告，不需注册。">
 <link rel="canonical" href="https://mingqingke.github.io/FriendSim-Android/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="FriendSim — 一个可以跟朋友对话的 Android 应用">
-<meta property="og:description" content="自建角色、长期记忆、语音条、本地加密存储。开源 Android 应用，APK 直接下载。">
+<meta property="og:title" content="FriendSim — 可以跟朋友对话的 Android 应用">
+<meta property="og:description" content="自己写角色设定，长期记忆，语音条，本地加密存储。开源 Android 应用。">
 <meta property="og:url" content="https://mingqingke.github.io/FriendSim-Android/">
 <meta property="og:image" content="https://mingqingke.github.io/FriendSim-Android/assets/og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -19,104 +19,101 @@
 {"@context":"https://schema.org","@type":"WebSite","name":"FriendSim","alternateName":["FriendSim Android","FriendSim APK"],"url":"https://mingqingke.github.io/FriendSim-Android/","inLanguage":"zh-CN"}
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication","name":"FriendSim","applicationCategory":"SocialNetworkingApplication","operatingSystem":"Android 8.0+","softwareVersion":"2.0.3","license":"https://www.gnu.org/licenses/gpl-3.0.html","downloadUrl":"https://github.com/Mingqingke/FriendSim-Android/releases/latest","codeRepository":"https://github.com/Mingqingke/FriendSim-Android","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"}}
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"FriendSim","applicationCategory":"SocialNetworkingApplication","operatingSystem":"Android 8.0+","softwareVersion":"2.0.3","license":"https://www.gnu.org/licenses/gpl-3.0.html","downloadUrl":"https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.4/FriendSim-2.9.4.apk","codeRepository":"https://github.com/Mingqingke/FriendSim-Android","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"}}
 </script>
 </head>
 <body>
-<nav><div class="wrap">
-  <img src="assets/icon.svg" alt="FriendSim 图标" width="26" height="26">
-  <span class="brand">FriendSim</span>
-  <div class="links">
-    <a href="#features">功能</a>
-    <a href="#look">界面</a>
-    <a href="#download">下载</a>
-    <a href="docs.html">使用</a>
+<header class="site"><div class="wrap">
+  <img src="assets/icon.svg" alt="FriendSim" width="24" height="24"><span class="brand">FriendSim</span>
+  <nav class="top">
+    <a href="#capability">功能</a><a href="#look">界面</a><a href="#download">下载</a>
+    <a href="docs.html">使用</a><a href="project.html">开源与安全</a>
     <a href="https://github.com/Mingqingke/FriendSim-Android">GitHub</a>
-  </div>
-</div></nav>
+  </nav>
+</div></header>
 
-<header class="wrap">
-  <img class="logo" src="assets/icon.svg" alt="FriendSim 应用图标" width="96" height="96">
-  <h1>一个可以跟朋友对话的<br>Android 应用</h1>
-  <p class="lede">自己写角色设定，让它记住你说过的事，用语音聊，数据只留在本机。开源，无广告，不需要注册。</p>
-  <div class="actions">
-    <a class="btn primary" href="https://github.com/Mingqingke/FriendSim-Android/releases/latest">下载 Android 版</a>
-    <a class="btn" href="https://github.com/Mingqingke/FriendSim-Android">查看源码</a>
+<div class="hero"><div class="wrap">
+  <img class="mark" src="assets/icon.svg" alt="FriendSim 应用图标" width="80" height="80">
+  <h1>一个可以跟朋友<br>对话的 Android 应用</h1>
+  <p class="lede">写下角色，它会记住你说过的事。语音、语气、回复节奏，都按你的设定来。数据只留在本机。</p>
+  <div class="cta">
+    <a class="btn solid" href="https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.4/FriendSim-2.9.4.apk" download>直接下载 APK</a>
+    <a class="btn ghost" href="https://github.com/Mingqingke/FriendSim-Android">查看源码</a>
   </div>
-  <p class="ver">最新版本 <strong id="ver">2.0.3</strong> · Android 8.0 及以上 · GPL-3.0</p>
-</header>
+  <div class="meta">
+    <span class="mono">2.0.3</span><span>·</span><span class="mono">9.77 MB</span><span>·</span>
+    <span>Android 8.0 及以上</span><span>·</span><span>GPL-3.0</span>
+  </div>
+</div></div>
 
-<section id="features"><div class="wrap">
-  <h2>它能做什么</h2>
-  <p class="sub">下面这些都在应用里真实存在，不是预告。</p>
+<section id="capability"><div class="wrap">
+  <p class="eyebrow">它现在能做什么</p>
+  <h2>下面每一条，都是应用里跑着的功能</h2>
   <div class="grid">
-    <div class="card"><h3>自己写的角色</h3><p>关系、性格、喜恶、雷区、共同回忆都可以填。填了雷区，它真的会在那句话上炸。</p></div>
-    <div class="card"><h3>记得住</h3><p>长期记忆分角色保存，聊得越久越像个熟人。记忆可以在设置里逐条查看和删除。</p></div>
-    <div class="card"><h3>语音条</h3><p>按住说话，对方可以回语音。合成优先走你自建的克隆桥接，连不上就退到系统朗读。</p></div>
-    <div class="card"><h3>像真人在打字</h3><p>回复延迟跟着心情走，文字一个字一个字冒出来，气泡尾巴和圆角按消息分组变化。</p></div>
-    <div class="card"><h3>数据只在本机</h3><p>聊天、角色、记忆、录音都存在本机，用 Keystore 派生的密钥加密，不上传服务器。</p></div>
-    <div class="card"><h3>三种脑袋</h3><p>自备 API Key、免 Key 公共端点、完全离线三档降级。没网也能聊。</p></div>
-    <div class="card"><h3>备份与导出</h3><p>整包加密备份，恢复前先校验；聊天可以导出成长图。</p></div>
-    <div class="card"><h3>图标伪装</h3><p>桌面显示成计算器或备忘录，点开才是它。</p></div>
+    <div class="cell"><div class="n">01</div><h3>自己写的角色</h3><p>关系、性格、喜恶、雷区、共同回忆。填了雷区，它真的会在那句话上炸。</p></div>
+    <div class="cell"><div class="n">02</div><h3>长期记忆</h3><p>记忆按角色分开保存，设置里能逐条看、逐条删。删掉的不再进入上下文。</p></div>
+    <div class="cell"><div class="n">03</div><h3>语音条</h3><p>按住说话，对方可以回语音。合成优先走自建桥接，连不上退回系统朗读，会如实告诉你。</p></div>
+    <div class="cell"><div class="n">04</div><h3>像真人在打字</h3><p>延迟跟心情走，文字一个字一个字冒出来，气泡圆角与尾巴按消息分组变化。</p></div>
+    <div class="cell"><div class="n">05</div><h3>三档降级</h3><p>自备 Key、公共端点、完全离线。没网也能聊，只是回复朴素些。</p></div>
+    <div class="cell"><div class="n">06</div><h3>本地加密</h3><p>聊天、角色、记忆、录音都在本机，用 Keystore 派生的密钥加密，不上传服务器。</p></div>
+    <div class="cell"><div class="n">07</div><h3>备份与导出</h3><p>整包加密备份，恢复前校验。对话可以导出成长图。</p></div>
+    <div class="cell"><div class="n">08</div><h3>运行诊断</h3><p>网络、接口、更新、存储四项真检查，检查失败会写清楚失败在哪。</p></div>
+    <div class="cell"><div class="n">09</div><h3>图标伪装</h3><p>桌面上显示成计算器或备忘录，点开才是它。</p></div>
   </div>
 </div></section>
 
 <section id="look"><div class="wrap">
-  <h2>界面</h2>
-  <p class="sub">下面是用样式还原的界面示意图，配色和气泡形状与真实应用一致。</p>
-  <div class="phone"><div class="screen">
-    <div class="bubble them">今天怎么这么晚</div>
-    <div class="bubble me">忙完了 刚到家</div>
-    <div class="bubble them">饭吃了没</div>
-    <div class="bubble me">还没 你呢</div>
-    <div class="bubble them">等你一起</div>
-  </div></div>
-  <p class="caption">界面示意 · 实际以应用内为准</p>
+  <p class="eyebrow">界面</p>
+  <h2>克制，但不冷淡</h2>
+  <div class="stage">
+    <div class="phone"><div class="screen">
+      <div class="bubble them">今天怎么这么晚</div>
+      <div class="bubble me">忙完了 刚到家</div>
+      <div class="bubble them">饭吃了没</div>
+      <div class="bubble me">还没 你呢</div>
+      <div class="bubble them">等你一起</div>
+    </div></div>
+    <div class="note">
+      <strong>用样式还原的界面示意</strong>
+      配色、气泡形状、分组圆角与真实应用一致。没有真机截图可用，所以不拿它冒充截图。<br><br>
+      深色跟随系统，强调色可换，动态取色默认关闭，保证不同设备上是同一个它。
+    </div>
+  </div>
 </div></section>
 
 <section id="download"><div class="wrap">
-  <h2>下载</h2>
-  <p class="sub">从 GitHub Releases 直接取 APK。装不上就点备用入口。</p>
-  <div class="dl">
-    <div class="kv"><span>当前版本</span><code>2.0.3 (versionCode 25)</code></div>
-    <div class="kv"><span>文件大小</span><code>9.77 MB</code></div>
-    <div class="kv"><span>发布日期</span><code>2026-10-23</code></div>
-    <div class="kv"><span>SHA-256</span><code>a57ce2a08e8527cfd4e086f7cfbf7db77a5012ab3e7d015d7e675277da46eb1f</code></div>
-  </div>
-  <div class="actions" style="margin-top:26px;justify-content:flex-start">
-    <a class="btn primary" href="https://github.com/Mingqingke/FriendSim-Android/releases/latest">下载 APK</a>
-    <a class="btn" href="https://github.com/Mingqingke/FriendSim-Android/releases">所有版本</a>
-  </div>
-  <p class="sub" style="margin-top:22px;font-size:14px">安装前需要在系统里允许「安装未知来源应用」。应用需要麦克风权限才能发语音，不需要其它权限。下载下来的 APK 可以用上面的 SHA-256 自行核对。</p>
-</div></section>
-
-<section><div class="wrap">
-  <h2>开源</h2>
-  <p class="sub">代码在 GitHub 上，GPL-3.0。</p>
-  <div class="grid">
-    <div class="card"><h3>源码</h3><p><a href="https://github.com/Mingqingke/FriendSim-Android">Mingqingke/FriendSim-Android</a> — Kotlin + Jetpack Compose。</p></div>
-    <div class="card"><h3>问题与建议</h3><p><a href="https://github.com/Mingqingke/FriendSim-Android/issues">Issues</a>，提之前先搜一下有没有人提过。</p></div>
-    <div class="card"><h3>更新日志</h3><p><a href="https://github.com/Mingqingke/FriendSim-Android/releases">Releases</a> 里有每个版本的说明和安装包。</p></div>
+  <p class="eyebrow">下载</p>
+  <h2>点一下就开始下载</h2>
+  <div class="dlbox">
+    <a class="btn solid" href="https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.4/FriendSim-2.9.4.apk" download>下载 FriendSim 2.0.3</a>
+    <div class="dlgrid">
+      <div><span>版本</span><b class="mono">2.0.3</b></div>
+      <div><span>大小</span><b class="mono">9,765,881 字节</b></div>
+      <div><span>日期</span><b class="mono">2026-10-23</b></div>
+      <div><span>要求</span><b>Android 8.0+ · arm64</b></div>
+    </div>
+    <div class="dlgrid"><div style="grid-column:1/-1"><span>SHA-256</span><b class="hash mono">a57ce2a08e8527cfd4e086f7cfbf7db77a5012ab3e7d015d7e675277da46eb1f</b></div></div>
+    <p class="warn">安装前需要允许「安装未知来源应用」。只申请麦克风权限（发语音用）。下载后可自行核对上面的 SHA-256。安装失败或想装旧版，去 <a href="https://github.com/Mingqingke/FriendSim-Android/releases" style="text-decoration:underline">Releases</a> 找对应版本。</p>
   </div>
 </div></section>
 
 <section><div class="wrap">
-  <h2>常见问题</h2>
-  <details><summary>需要 API Key 吗？</summary><p>不强制。可以填自己的 Key 走你选的模型，也可以走公共端点，或者干脆用离线模式——离线模式回复比较朴素，但完全不需要网络。</p></details>
-  <details><summary>聊天记录会上传吗？</summary><p>不会。数据存在本机并加密。只有当你配置了第三方模型服务时，对话内容才会发给你配置的那个服务。</p></details>
-  <details><summary>语音克隆要装东西吗？</summary><p>要。本机不跑克隆模型，需要在电脑上跑一个桥接服务，在设置里填地址。连不上时会退回系统朗读。</p></details>
-  <details><summary>怎么升级？</summary><p>应用内「关于 → 检查更新」会读 GitHub 上的版本信息，直接下载新包覆盖安装，数据不会丢。</p></details>
-  <details><summary>更新失败怎么办？</summary><p>多源会自动切换。还不行就从 Releases 页手动下载，SHA-256 可以对一下。</p></details>
+  <p class="eyebrow">常见问题</p>
+  <h2>几个会被问到的问题</h2>
+  <div style="margin-top:40px">
+    <details><summary>必须填 API Key 吗</summary><p>不必须。可以填自己的 Key，也可以走公共端点，或者直接开离线模式。离线模式不联网，回复靠本地规则。</p></details>
+    <details><summary>聊天记录会上传吗</summary><p>不会上传到我们的服务器——这个项目没有服务器。只有当你自己配置了模型接口时，那一轮对话内容才会发给你配置的服务。</p></details>
+    <details><summary>语音克隆要额外装东西吗</summary><p>要。本机不跑克隆模型，需要在电脑上跑一个桥接服务，把地址填进设置。连不上会退回系统朗读。</p></details>
+    <details><summary>怎么升级</summary><p>应用内「关于 → 检查更新」读取版本信息后直接下载覆盖安装，数据保留。也可以在官网重新下包覆盖。</p></details>
+    <details><summary>更新失败怎么办</summary><p>更新器会依次换下载源。全失败就去 Releases 手动下载，用官网的 SHA-256 核对。</p></details>
+  </div>
 </div></section>
 
 <footer><div class="wrap">
-  <span>FriendSim · 2026</span>
-  <a href="https://github.com/Mingqingke/FriendSim-Android">GitHub</a>
-  <a href="docs.html">使用指南</a>
-  <a href="https://github.com/Mingqingke/FriendSim-Android/releases">下载</a>
+  <span class="mono">FriendSim · 2026</span>
+  <a href="download.html">版本与更新</a><a href="docs.html">使用指南</a><a href="project.html">开源与安全</a>
   <a href="https://github.com/Mingqingke/FriendSim-Android/issues">反馈</a>
-  <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPL-3.0</a>
-  <span style="margin-left:auto">不收集访问数据，没有第三方统计脚本</span>
+  <span style="margin-left:auto">无统计脚本，不收集访问数据</span>
 </div></footer>
 <script src="app.js" defer></script>
 </body>

@@ -1,0 +1,35 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>开源与安全 — FriendSim</title>
+<meta name="description" content="FriendSim 以 GPL-3.0 开源。了解它的数据存在哪、申请了哪些权限、如何反馈问题与构建。">
+<link rel="canonical" href="https://mingqingke.github.io/FriendSim-Android/project.html">
+<meta property="og:title" content="开源与安全 — FriendSim"><meta property="og:description" content="数据存哪、用了什么权限、怎么参与。">
+<meta property="og:url" content="https://mingqingke.github.io/FriendSim-Android/project.html">
+<meta property="og:image" content="https://mingqingke.github.io/FriendSim-Android/assets/og.png">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css">
+</head><body>
+<header class="site"><div class="wrap"><img src="assets/icon.svg" alt="FriendSim" width="24" height="24"><span class="brand">FriendSim</span>
+<nav class="top"><a href="index.html">首页</a><a href="download.html">下载</a><a href="docs.html">使用</a><a href="https://github.com/Mingqingke/FriendSim-Android">GitHub</a></nav></div></header>
+<div class="hero"><div class="wrap"><p class="eyebrow">开源与安全</p>
+<h1 style="font-size:clamp(32px,5.4vw,60px)">一台手机里的事，<br>就在这台手机里发生</h1>
+<p class="lede">没有账号，没有服务器，没有统计脚本。代码公开，可以自己看。</p></div></div>
+<section><div class="wrap"><p class="eyebrow">数据在哪</p><h2>全部在应用私有目录</h2>
+<div class="grid">
+<div class="cell"><div class="n">存储</div><h3>本地加密</h3><p>聊天、角色、记忆、录音存放在应用私有目录，密钥由 Android Keystore 派生。</p></div>
+<div class="cell"><div class="n">网络</div><h3>只在你配置时</h3><p>不配置接口就只走本机规则；配置之后，那一轮对话才发给你指定的服务。</p></div>
+<div class="cell"><div class="n">删除</div><h3>删了就没了</h3><p>应用内清除数据会真的删掉本地文件，没有云端副本可以找回。</p></div>
+</div></div></section>
+<section><div class="wrap"><p class="eyebrow">权限</p><h2>只要一个</h2>
+<div class="grid">
+<div class="cell"><div class="n">必要</div><h3>麦克风</h3><p>只在你按住说话时录音，录完存本地。</p></div>
+<div class="cell"><div class="n">可选</div><h3>通知</h3><p>用来显示朋友的主动消息和快捷回复，可以随时关掉。</p></div>
+<div class="cell"><div class="n">不需要</div><h3>定位 / 通讯录 / 短信</h3><p>这些都没有申请，安装包里也查不到。</p></div>
+</div></div></section>
+<section><div class="wrap"><p class="eyebrow">参与</p><h2>代码是公开的</h2>
+<div class="grid">
+<div class="cell"><div class="n">源码</div><h3>Kotlin + Compose</h3><p><a href="https://github.com/Mingqingke/FriendSim-Android" style="text-decoration:underline">Mingqingke/FriendSim-Android</a>，GPL-3.0。</p></div>
+<div class="cell"><div class="n">问题</div><h3>Issues</h3><p><a href="https://github.com/Mingqingke/FriendSim-Android/issues" style="text-decoration:underline">提 issue</a> 前先搜一下，附上版本号和机型。</p></div>
+<div class="cell"><div class="n">构建</div><h3>自己编</h3><p>JDK 21 + Gradle 9.4.1 + AGP 9.2.1，README 里有完整命令。</p></div>
+</div></div></section>
+<footer><div class="wrap"><span class="mono">FriendSim · 2026</span><a href="index.html">首页</a><a href="download.html">下载</a><a href="https://github.com/Mingqingke/FriendSim-Android">GitHub</a></div></footer>
+<script src="app.js" defer></script></body></html>

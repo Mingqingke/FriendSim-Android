@@ -1,50 +1,35 @@
-<!doctype html>
-<html lang="zh-CN">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FriendSim 使用指南 — 安装、API、记忆与备份</title>
-<meta name="description" content="FriendSim 安装与升级、API 配置、角色与记忆、语音功能、备份恢复、更新失败的排查方法。">
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>使用指南 — FriendSim 安装、配置与排错</title>
+<meta name="description" content="FriendSim 安装与升级、API 配置、角色与记忆管理、语音桥接、备份恢复、更新失败的排查步骤。">
 <link rel="canonical" href="https://mingqingke.github.io/FriendSim-Android/docs.html">
-<meta property="og:title" content="FriendSim 使用指南">
-<meta property="og:description" content="安装、API 配置、角色与记忆、语音、备份恢复与排错。">
+<meta property="og:title" content="使用指南 — FriendSim"><meta property="og:description" content="安装、配置、记忆、语音、备份与排错。">
 <meta property="og:url" content="https://mingqingke.github.io/FriendSim-Android/docs.html">
 <meta property="og:image" content="https://mingqingke.github.io/FriendSim-Android/assets/og.png">
-<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="styles.css">
-</head>
-<body>
-<nav><div class="wrap">
-  <img src="assets/icon.svg" alt="FriendSim" width="26" height="26">
-  <span class="brand">FriendSim</span>
-  <div class="links"><a href="index.html">首页</a><a href="index.html#download">下载</a><a href="https://github.com/Mingqingke/FriendSim-Android">GitHub</a></div>
-</div></nav>
-<main class="wrap" style="padding-top:64px">
-  <h1 style="font-size:clamp(28px,4vw,42px)">使用指南</h1>
-  <p class="lede" style="text-align:left;margin:0 0 40px">装、用、出问题时先看这里。</p>
-
-  <h2>安装与升级</h2>
-  <p class="sub">下载 APK 后需要在系统设置里允许安装未知来源应用。升级直接覆盖安装，聊天记录、角色、记忆都会保留——只要签名没换。</p>
-
-  <h2>AI 配置</h2>
-  <p class="sub">设置 → 对话 → 高级：填 API Key 和 Base URL（兼容 OpenAI 格式）。不填就走公共端点，或者打开「仅离线」用本地的规则回复。</p>
-
-  <h2>角色与记忆</h2>
-  <p class="sub">新建角色时可以填关系、性格、喜好、雷区和共同回忆。记忆在设置 → 记忆管理里按角色查看，可以逐条删除，删掉的内容不会再进入对话上下文。</p>
-
-  <h2>语音</h2>
-  <p class="sub">按住输入框旁边的按钮说话，松手发送。要让对方用你的参考音色回话，需要在电脑上跑一个桥接服务并在设置 → 语音里填地址；连不上会退回系统朗读，这不是故障。</p>
-
-  <h2>备份与恢复</h2>
-  <p class="sub">设置 → 隐私与数据可以导出整包备份。恢复前会校验文件，覆盖范围会在确认框里写清楚。</p>
-
-  <h2>更新失败</h2>
-  <p class="sub">应用会依次尝试 GitHub 接口、jsDelivr 和 raw 三个来源，下载还会切换镜像。全都失败时去 Releases 页手动下载，用页面上的 SHA-256 核对后覆盖安装。</p>
-
-  <h2>隐私与许可</h2>
-  <p class="sub">数据只存在本机，用 Android Keystore 派生的密钥加密。项目以 GPL-3.0 发布，源码在 GitHub。</p>
-</main>
-<footer><div class="wrap"><span>FriendSim · 2026</span><a href="index.html">首页</a><a href="https://github.com/Mingqingke/FriendSim-Android">GitHub</a></div></footer>
-<script src="app.js" defer></script>
-</body>
-</html>
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css">
+</head><body>
+<header class="site"><div class="wrap"><img src="assets/icon.svg" alt="FriendSim" width="24" height="24"><span class="brand">FriendSim</span>
+<nav class="top"><a href="index.html">首页</a><a href="download.html">下载</a><a href="project.html">开源与安全</a><a href="https://github.com/Mingqingke/FriendSim-Android">GitHub</a></nav></div></header>
+<div class="hero"><div class="wrap"><p class="eyebrow">使用指南</p>
+<h1 style="font-size:clamp(32px,5.4vw,60px)">装、配、出问题</h1>
+<p class="lede">按顺序看，大部分问题能自己解决。</p></div></div>
+<section><div class="wrap">
+<div class="grid">
+<div class="cell"><div class="n">01</div><h3>安装与升级</h3><p>允许安装未知来源应用后点击 APK。升级直接覆盖安装，聊天、角色、记忆都会保留，前提是签名没变。</p></div>
+<div class="cell"><div class="n">02</div><h3>配置 AI 接口</h3><p>设置 → 对话 → 高级：填 API Key 与 Base URL（OpenAI 兼容格式）。不填就走公共端点，或打开「仅离线」。</p></div>
+<div class="cell"><div class="n">03</div><h3>角色</h3><p>新建时填关系、性格、喜好、雷区、共同回忆。填得越具体，它越像那个人；留空就是通用朋友。</p></div>
+<div class="cell"><div class="n">04</div><h3>记忆</h3><p>设置 → 记忆管理：按角色查看画像与情节，逐条删除或整角色清空。删掉的内容不会再出现在上下文里。</p></div>
+<div class="cell"><div class="n">05</div><h3>语音</h3><p>按住说话发送语音。要让对方用你的音色回话，需要在电脑上跑 GPT-SoVITS 桥接，在设置 → 语音填地址；连不上会退回系统朗读。</p></div>
+<div class="cell"><div class="n">06</div><h3>备份</h3><p>设置 → 隐私与数据导出整包备份。恢复前会校验文件，确认框里写明会覆盖哪些内容。</p></div>
+<div class="cell"><div class="n">07</div><h3>更新失败</h3><p>更新器依次尝试 GitHub 接口、jsDelivr、raw，下载还会切镜像。全失败就去 Releases 手动下载，核对 SHA-256。</p></div>
+<div class="cell"><div class="n">08</div><h3>诊断</h3><p>设置 → 运行诊断：网络、AI 接口、更新服务、存储四项真检查，失败会写清楚是哪一步。</p></div>
+</div></div></section>
+<section><div class="wrap"><p class="eyebrow">排错</p><h2>常见症状</h2>
+<div style="margin-top:36px">
+<details><summary>一直提示「未配置 AI」</summary><p>进设置 → 对话 → 高级确认 Key 和地址都填了，再点一下「验证连通性」。地址需要以 /v1 结尾（多数服务如此）。</p></details>
+<details><summary>录音发出去是空的</summary><p>检查麦克风权限是否被系统回收。如果环境很安静，波形会很低，这是正常的。</p></details>
+<details><summary>语音条没声音</summary><p>如果是克隆音色，说明桥接没连上，此时会退回系统朗读；系统朗读也没声音就去系统设置里检查 TTS 引擎。</p></details>
+<details><summary>安装时报签名不一致</summary><p>手机上装过别的渠道包。先卸载旧包再装会丢失本地数据，建议先导出备份。</p></details>
+</div></div></section>
+<footer><div class="wrap"><span class="mono">FriendSim · 2026</span><a href="index.html">首页</a><a href="download.html">下载</a><a href="project.html">开源与安全</a></div></footer>
+<script src="app.js" defer></script></body></html>
