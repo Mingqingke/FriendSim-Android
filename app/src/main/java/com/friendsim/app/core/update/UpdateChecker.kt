@@ -133,43 +133,79 @@ object UpdateChecker {
         return 0
     }
 
-    /** 下载到 cache，progress 回调 0..1。 */
+    /**
+     * 下载到 cache，progress 回调 0..1。
+     * - 先写 .part 临时文件，完整后再原子改名，绝不留下半个 APK
+     * - 已有 .part 时用 Range 续传；服务器不支持 206 就从头来
+     * - 进度回调节流到 ~8 次/秒，避免每 64KB 触发一次重组
+     */
     suspend fun download(
         context: Context,
         release: Release,
         onProgress: (Float) -> Unit,
+        onRate: (bytesPerSec: Long, etaMs: Long) -> Unit = { _, _ -> },
     ): File? = withContext(Dispatchers.IO) {
-        runCatching {
-            for (url in release.apkUrls) {
-            val request = Request.Builder()
-                .url(url)
-                .header("User-Agent", "FriendSim/${BuildConfig.VERSION_NAME}")
-                .build()
-            val result = runCatching {
-            client.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) return@runCatching null
-                val body = response.body
-                val total = body.contentLength().coerceAtLeast(1L)
-                val target = File(context.cacheDir, "friendsim-${release.version}.apk")
-                body.byteStream().use { input ->
-                    target.outputStream().use { output ->
-                        val buffer = ByteArray(64 * 1024)
-                        var read: Int
-                        var written = 0L
-                        while (input.read(buffer).also { read = it } > 0) {
-                            output.write(buffer, 0, read)
-                            written += read
-                            runCatching { onProgress((written.toFloat() / total).coerceIn(0f, 1f)) }
+        val finalFile = File(context.cacheDir, "friendsim-${release.version}.apk")
+        val part = File(context.cacheDir, "friendsim-${release.version}.part")
+
+        for (url in release.apkUrls) {
+            val ok = runCatching {
+                val existing = if (part.exists()) part.length() else 0L
+                val builder = Request.Builder()
+                    .url(url)
+                    .header("User-Agent", "FriendSim/${BuildConfig.VERSION_NAME}")
+                if (existing > 1024) builder.header("Range", "bytes=$existing-")
+
+                client.newCall(builder.build()).execute().use { response ->
+                    if (!response.isSuccessful) return@runCatching false
+                    val resuming = response.code == 206 && existing > 0
+                    val base = if (resuming) existing else 0L
+                    if (!resuming) part.delete()
+
+                    val total = response.body.contentLength().let { if (it > 0) it + base else 0L }
+                    val sink = java.io.RandomAccessFile(part, "rw")
+                    sink.seek(base)
+                    var written = base
+                    var lastReport = 0L
+                    var windowStart = System.currentTimeMillis()
+                    var windowBytes = base
+                    try {
+                        response.body.byteStream().use { input ->
+                            val buffer = ByteArray(64 * 1024)
+                            while (true) {
+                                val read = input.read(buffer)
+                                if (read <= 0) break
+                                sink.write(buffer, 0, read)
+                                written += read
+                                val now = System.currentTimeMillis()
+                                if (total > 0 && now - lastReport >= 120) {
+                                    lastReport = now
+                                    runCatching { onProgress((written.toFloat() / total).coerceIn(0f, 0.999f)) }
+                                }
+                                // 速度/剩余时间：500ms 采样窗口，按真实字节算，不编数字
+                                val span = now - windowStart
+                                if (span >= 500) {
+                                    val bps = ((written - windowBytes) * 1000L / span).coerceAtLeast(0L)
+                                    val eta = if (bps > 0 && total > written) (total - written) * 1000L / bps else -1L
+                                    runCatching { onRate(bps, eta) }
+                                    windowStart = now
+                                    windowBytes = written
+                                }
+                            }
                         }
+                    } finally {
+                        runCatching { sink.close() }
                     }
+
+                    if (part.length() < 1024 * 512) return@runCatching false
+                    if (finalFile.exists() && !finalFile.delete()) return@runCatching false
+                    if (!part.renameTo(finalFile)) return@runCatching false
+                    runCatching { onProgress(1f) }
+                    true
                 }
-                if (target.length() < 1024 * 512) return@runCatching null
-                target
-            }
-            }.getOrNull()
-            if (result != null) return@withContext result
-            }
-            null
-        }.getOrNull()
+            }.getOrDefault(false)
+            if (ok) return@withContext finalFile
+        }
+        null
     }
 }

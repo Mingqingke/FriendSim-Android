@@ -131,4 +131,10 @@ sealed interface Route {
 
     /** 三级：高级设置（Key / Base URL / 连通性验证） */
     data object Advanced : Route
+
+    /** 记忆管理中心 */
+    data object Memory : Route
+
+    /** 运行诊断 */
+    data object Diagnostics : Route
 }

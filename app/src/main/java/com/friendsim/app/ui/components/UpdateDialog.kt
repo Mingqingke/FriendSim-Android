@@ -62,6 +62,9 @@ fun UpdateDialog(
     var progress by remember { mutableStateOf(0f) }
     var file by remember { mutableStateOf<java.io.File?>(null) }
     var error by remember { mutableStateOf<String?>(null) }
+    var job by remember { mutableStateOf<kotlinx.coroutines.Job?>(null) }
+    var rateText by remember { mutableStateOf("") }
+    var paused by remember { mutableStateOf(false) }
 
     Dialog(
         onDismissRequest = { if (!downloading) onDismiss() },
@@ -103,11 +106,34 @@ fun UpdateDialog(
             if (downloading || progress > 0f) {
                 WaveProgress(progress = progress, color = scheme.primary)
                 Spacer(Modifier.height(8.dp))
-                Text(
-                    text = if (file != null) "下载完成" else "正在下载 ${(progress * 100).toInt()}%",
-                    fontSize = 12.sp,
-                    color = scheme.onSurfaceVariantSummary,
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = when {
+                            file != null -> "下载完成"
+                            paused -> "已暂停 · 继续会从断点接着下"
+                            else -> "正在下载 ${(progress * 100).toInt()}%$rateText"
+                        },
+                        modifier = Modifier.weight(1f),
+                        fontSize = 12.sp,
+                        color = scheme.onSurfaceVariantSummary,
+                    )
+                    if (downloading && file == null) {
+                        Text(
+                            text = "暂停",
+                            modifier = Modifier.bouncyClickable(scaleDown = 0.94f) {
+                                job?.cancel()
+                                job = null
+                                downloading = false
+                                paused = true
+                            },
+                            fontSize = 12.sp,
+                            color = scheme.primary,
+                        )
+                    }
+                }
                 Spacer(Modifier.height(14.dp))
             }
 
@@ -144,16 +170,27 @@ fun UpdateDialog(
                                 onDismiss()
                             } else {
                                 downloading = true
+                                paused = false
                                 error = null
-                                scope.launch {
-                                    val result = UpdateChecker.download(context, release) { p ->
-                                        progress = p
-                                    }
+                                job = scope.launch {
+                                    val result = UpdateChecker.download(
+                                        context = context,
+                                        release = release,
+                                        onProgress = { p -> progress = p },
+                                        onRate = { bps, eta ->
+                                            val kb = bps / 1024
+                                            rateText = if (kb > 0) {
+                                                val etaPart = if (eta > 0) " · 剩 ${eta / 1000}s" else ""
+                                                " · $kb KB/s$etaPart"
+                                            } else ""
+                                        },
+                                    )
                                     downloading = false
                                     file = result
                                     if (result == null) {
                                         error = "下载失败，稍后再试"
                                         progress = 0f
+                                        rateText = ""
                                     }
                                 }
                             }
@@ -164,6 +201,7 @@ fun UpdateDialog(
                         text = when {
                             downloading -> "下载中"
                             file != null -> "安装"
+                            paused -> "继续下载"
                             else -> "立即更新"
                         },
                         fontSize = 15.sp,

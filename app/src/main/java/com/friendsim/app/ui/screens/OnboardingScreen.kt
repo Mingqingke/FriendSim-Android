@@ -172,15 +172,27 @@ fun OnboardingScreen(onFinish: () -> Unit) {
 
                     Spacer(Modifier.weight(1f))
 
+                    val breath = rememberInfiniteTransition(label = "breath")
+                    val breathScale by breath.animateFloat(
+                        initialValue = 1f,
+                        targetValue = if (motion.reduced) 1f else 1.045f,
+                        animationSpec = infiniteRepeatable(
+                            tween(2600, easing = androidx.compose.animation.core.FastOutSlowInEasing),
+                            RepeatMode.Reverse,
+                        ),
+                        label = "breathScale",
+                    )
                     with(this@SharedTransitionLayout) {
                         MorphVisual(
                             page = page,
                             accent = LocalAccent.current ?: scheme.primary,
-                            modifier = Modifier.sharedElement(
-                                sharedContentState = rememberSharedContentState(key = "onboard-shape"),
-                                animatedVisibilityScope = this@AnimatedContent,
-                                boundsTransform = { _, _ -> MotionTokens.bounds() },
-                            ),
+                            modifier = Modifier
+                                .graphicsLayer { scaleX = breathScale; scaleY = breathScale }
+                                .sharedElement(
+                                    sharedContentState = rememberSharedContentState(key = "onboard-shape"),
+                                    animatedVisibilityScope = this@AnimatedContent,
+                                    boundsTransform = { _, _ -> MotionTokens.bounds() },
+                                ),
                         )
                     }
 

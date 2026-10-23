@@ -15,6 +15,8 @@ fun SettingsScreen(
     onOpenChatSettings: () -> Unit,
     onOpenVoiceSettings: () -> Unit,
     onOpenPrivacyData: () -> Unit,
+    onOpenMemory: () -> Unit = {},
+    onOpenDiagnostics: () -> Unit = {},
     onOpenAbout: () -> Unit,
 ) {
     FsPage(title = "设置", bottomPadding = bottomPadding) {
@@ -35,6 +37,20 @@ fun SettingsScreen(
                 title = "语音",
                 summary = "朗读方式 · 克隆引擎",
                 onClick = onOpenVoiceSettings,
+            )
+        }
+
+        section(title = "工具", key = "tools") {
+            ArrowPreference(
+                title = "记忆管理",
+                summary = "查看 · 删除它记住的事",
+                onClick = onOpenMemory,
+            )
+            HorizontalDivider()
+            ArrowPreference(
+                title = "运行诊断",
+                summary = "网络 · 接口 · 更新 · 存储",
+                onClick = onOpenDiagnostics,
             )
         }
 

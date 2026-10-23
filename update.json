@@ -1,13 +1,13 @@
 {
-  "version": "2.9.4",
-  "display": "2.0.3",
-  "code": 25,
-  "notes": "新增记忆管理 能看见也能删掉它记住的事\n新增运行诊断 网络 接口 更新 存储\n下载支持断点续传 先写临时文件再替换\n修复了一些已知问题",
-  "page": "https://github.com/Mingqingke/FriendSim-Android/releases/tag/v2.0.3",
+  "version": "2.9.5",
+  "display": "2.1.0",
+  "code": 26,
+  "notes": "引导页加了呼吸动效\n下载可以暂停 继续从断点接着下\n下载时显示速度和剩余时间\n修复了一些已知问题",
+  "page": "https://github.com/Mingqingke/FriendSim-Android/releases/tag/v2.1.0",
   "apk": [
-    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.4/FriendSim-2.9.4.apk",
-    "https://ghfast.top/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.4/FriendSim-2.9.4.apk",
-    "https://ghproxy.net/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.4/FriendSim-2.9.4.apk",
-    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.0.3/FriendSim-2.0.3.apk"
+    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.5/FriendSim-2.9.5.apk",
+    "https://ghfast.top/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.5/FriendSim-2.9.5.apk",
+    "https://ghproxy.net/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.5/FriendSim-2.9.5.apk",
+    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.1.0/FriendSim-2.1.0.apk"
   ]
 }
