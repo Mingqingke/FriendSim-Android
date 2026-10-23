@@ -1,13 +1,13 @@
 {
-  "version": "2.9.6",
-  "display": "2.2.0",
-  "code": 27,
-  "notes": "回复更有情绪起伏 不再像客服\n新增导入聊天记录 自动提炼人物档案\n档案里多了雷区和共同经历\n修复了一些已知问题",
-  "page": "https://github.com/Mingqingke/FriendSim-Android/releases/tag/v2.2.0",
+  "version": "2.9.7",
+  "display": "2.3.0",
+  "code": 28,
+  "notes": "外观里新增高级材质与高级动画开关\n新增内容安全校验 越线不回答\n回复的情绪更连贯了\n修复了一些已知问题",
+  "page": "https://github.com/Mingqingke/FriendSim-Android/releases/tag/v2.3.0",
   "apk": [
-    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.6/FriendSim-2.9.6.apk",
-    "https://ghfast.top/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.6/FriendSim-2.9.6.apk",
-    "https://ghproxy.net/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.6/FriendSim-2.9.6.apk",
-    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.2.0/FriendSim-2.2.0.apk"
+    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.7/FriendSim-2.9.7.apk",
+    "https://ghfast.top/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.7/FriendSim-2.9.7.apk",
+    "https://ghproxy.net/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.7/FriendSim-2.9.7.apk",
+    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.3.0/FriendSim-2.3.0.apk"
   ]
 }

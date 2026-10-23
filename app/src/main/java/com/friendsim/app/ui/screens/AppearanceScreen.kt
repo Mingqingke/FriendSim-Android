@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -248,6 +249,53 @@ fun AppearanceScreen(onBack: () -> Unit, notify: (String) -> Unit) {
                     value = look.bgDim.toFloat(),
                     range = 0f..100f,
                     onChange = { scope.launch { settings.setBgDim(it.toInt()) } },
+                )
+            }
+        }
+
+        section(title = "高级效果", key = "premium") {
+            Row(
+                modifier = Modifier.fillMaxWidth().clickable {
+                    scope.launch {
+                        AppGraph.settings.setAdvancedMaterial(!look.advancedMaterial)
+                        if (look.advancedMaterial) AppGraph.settings.setBgBlur(0)
+                    }
+                }.padding(horizontal = 16.dp, vertical = 14.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(Modifier.weight(1f)) {
+                    Text(text = "高级材质", fontSize = 15.sp)
+                    Text(
+                        text = if (look.advancedMaterial) "半透明与模糊层已开启" else "关闭后不使用模糊，更省电",
+                        fontSize = 12.sp,
+                        color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
+                    )
+                }
+                Text(
+                    text = if (look.advancedMaterial) "开" else "关",
+                    fontSize = 13.sp,
+                    color = if (look.advancedMaterial) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.onSurfaceVariantSummary,
+                )
+            }
+            HorizontalDivider()
+            Row(
+                modifier = Modifier.fillMaxWidth().clickable {
+                    scope.launch { AppGraph.settings.setAdvancedMotion(!look.advancedMotion) }
+                }.padding(horizontal = 16.dp, vertical = 14.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(Modifier.weight(1f)) {
+                    Text(text = "高级动画", fontSize = 15.sp)
+                    Text(
+                        text = if (look.advancedMotion) "弹性与共享元素过渡" else "已简化，只保留淡入淡出",
+                        fontSize = 12.sp,
+                        color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
+                    )
+                }
+                Text(
+                    text = if (look.advancedMotion) "开" else "关",
+                    fontSize = 13.sp,
+                    color = if (look.advancedMotion) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.onSurfaceVariantSummary,
                 )
             }
         }

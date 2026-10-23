@@ -92,7 +92,7 @@ fun FsApp(initialChatId: String? = null) {
     FsTheme(themeMode = themeMode, dynamicColor = dynamicColor) {
         val systemMotion = rememberMotionPrefs()
         val motionPrefs = remember(systemMotion, look.reduceMotion) {
-            systemMotion.copy(reduced = systemMotion.reduced || look.reduceMotion)
+            systemMotion.copy(reduced = systemMotion.reduced || look.reduceMotion || !look.advancedMotion)
         }
         CompositionLocalProvider(
             LocalMotionPrefs provides motionPrefs,

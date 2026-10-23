@@ -37,6 +37,8 @@ data class EngineConfig(
     val quietHours: Boolean = true,
     val keyValid: Boolean = true,
     val voiceReply: Boolean = false,
+    val chatLocked: Boolean = false,
+    val safetyStrikes: Int = 0,
 ) {
     val hasKey: Boolean get() = apiKey.isNotBlank()
 }
@@ -59,6 +61,10 @@ data class AppearancePrefs(
     val reduceMotion: Boolean = false,
     val menuStyle: String = MENU_JELLY,
     val appIcon: String = "DEFAULT",
+    /** 高级材质：半透明/模糊层 */
+    val advancedMaterial: Boolean = false,
+    /** 高级动画：弹性与共享元素过渡 */
+    val advancedMotion: Boolean = true,
 ) {
     companion object {
         const val FONT_SANS = "SANS"
@@ -113,6 +119,10 @@ class SettingsStore(private val context: Context) {
         val accent = stringPreferencesKey("accent_color")
         val haptics = booleanPreferencesKey("haptics")
         val reduceMotion = booleanPreferencesKey("reduce_motion")
+        val advancedMaterial = booleanPreferencesKey("advanced_material")
+        val advancedMotion = booleanPreferencesKey("advanced_motion")
+        val chatLocked = booleanPreferencesKey("chat_locked")
+        val safetyStrikes = intPreferencesKey("safety_strikes")
         val menuStyle = stringPreferencesKey("menu_style")
         val appIcon = stringPreferencesKey("app_icon")
         val weatherOn = booleanPreferencesKey("weather_on")
@@ -153,6 +163,8 @@ class SettingsStore(private val context: Context) {
             accent = p[Key.accent] ?: AppearancePrefs.ACCENT_SYSTEM,
             haptics = p[Key.haptics] ?: true,
             reduceMotion = p[Key.reduceMotion] ?: false,
+            advancedMaterial = p[Key.advancedMaterial] ?: false,
+            advancedMotion = p[Key.advancedMotion] ?: true,
             menuStyle = p[Key.menuStyle] ?: AppearancePrefs.MENU_JELLY,
             appIcon = p[Key.appIcon] ?: "DEFAULT",
         )
@@ -187,6 +199,12 @@ class SettingsStore(private val context: Context) {
     suspend fun setAccent(v: String) = context.fsStore.edit { it[Key.accent] = v }
     suspend fun setHaptics(v: Boolean) = context.fsStore.edit { it[Key.haptics] = v }
     suspend fun setReduceMotion(v: Boolean) = context.fsStore.edit { it[Key.reduceMotion] = v }
+    suspend fun setAdvancedMaterial(v: Boolean) = context.fsStore.edit { it[Key.advancedMaterial] = v }
+    suspend fun setAdvancedMotion(v: Boolean) = context.fsStore.edit { it[Key.advancedMotion] = v }
+    val chatLocked: Flow<Boolean> = context.fsStore.data.map { it[Key.chatLocked] ?: false }
+    val safetyStrikes: Flow<Int> = context.fsStore.data.map { it[Key.safetyStrikes] ?: 0 }
+    suspend fun setChatLocked(v: Boolean) = context.fsStore.edit { it[Key.chatLocked] = v }
+    suspend fun setSafetyStrikes(v: Int) = context.fsStore.edit { it[Key.safetyStrikes] = v }
     suspend fun setMenuStyle(v: String) = context.fsStore.edit { it[Key.menuStyle] = v }
     suspend fun setAppIcon(v: String) = context.fsStore.edit { it[Key.appIcon] = v }
     suspend fun setWeatherOn(v: Boolean) = context.fsStore.edit { it[Key.weatherOn] = v }
@@ -218,6 +236,8 @@ class SettingsStore(private val context: Context) {
             quietHours = p[Key.quietHours] ?: true,
             keyValid = p[Key.keyValid] ?: true,
             voiceReply = p[Key.voiceReply] ?: false,
+            chatLocked = p[Key.chatLocked] ?: false,
+            safetyStrikes = p[Key.safetyStrikes] ?: 0,
         )
     }
 

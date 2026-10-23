@@ -228,6 +228,10 @@ fun ChatScreen(
     var searching by remember { mutableStateOf(false) }
     var query by remember { mutableStateOf("") }
     val statuses = remember { mutableStateMapOf<String, String>() }
+    var locked by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        runCatching { settings.chatLocked.collect { locked = it } }
+    }
 
     val listState = rememberLazyListState()
     val playerRef = remember { arrayOfNulls<MediaPlayer>(1) }
@@ -414,6 +418,34 @@ fun ChatScreen(
 
     fun deliver(text: String, quote: String? = null) {
         if (text.isBlank() || streaming || busy) return
+        if (locked) {
+            notify("对话已冻结，去设置里解除")
+            return
+        }
+        // 内容安全：命中就不发请求，按次数递进
+        val verdict = com.friendsim.app.core.safety.SafetyGuard.check(text)
+        if (verdict.blocked) {
+            busy = true
+            scope.launch {
+                val strikes = runCatching { settings.snapshot().safetyStrikes }.getOrDefault(0) + 1
+                runCatching { settings.setSafetyStrikes(strikes) }
+                val line = com.friendsim.app.core.safety.SafetyGuard.refusal(
+                    verdict.category ?: com.friendsim.app.core.safety.SafetyGuard.Category.SEXUAL,
+                    strikes - 1,
+                )
+                runCatching { store.append(friendId, ChatMessage(UUID.randomUUID().toString(), Roles.NOTICE, line)) }
+                messages = store.messages(friendId)
+                if (strikes >= 3) {
+                    runCatching { settings.setChatLocked(true) }
+                    runCatching { settings.setApiKey("") }
+                    notify("对话已冻结，密钥已清除")
+                } else {
+                    notify("这根线不聊")
+                }
+                busy = false
+            }
+            return
+        }
         busy = true
         scope.launch {
             val userMsgId = UUID.randomUUID().toString()
