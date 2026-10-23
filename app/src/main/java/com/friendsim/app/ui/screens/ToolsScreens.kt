@@ -42,6 +42,15 @@ import top.yukonga.miuix.kmp.basic.HorizontalDivider
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
+/** 记忆条目去掉句末标点和前缀符号，读起来更干净。 */
+private fun String.cleanMemoryText(): String =
+    trim()
+        .removePrefix("·")
+        .removePrefix("-")
+        .trim()
+        .trimEnd('。', '，', ',', '.', '；', ';', '！', '!')
+        .trim()
+
 /** 记忆管理中心：按角色查看/删除长期记忆，删掉的不会再进上下文。 */
 @Composable
 fun MemoryCenterScreen(onBack: () -> Unit, notify: (String) -> Unit) {
@@ -109,7 +118,7 @@ fun MemoryCenterScreen(onBack: () -> Unit, notify: (String) -> Unit) {
                     )
                     Spacer(Modifier.width(10.dp))
                     Text(
-                        text = item.text,
+                        text = item.text.cleanMemoryText(),
                         modifier = Modifier.weight(1f),
                         fontSize = 14.sp,
                         maxLines = 3,

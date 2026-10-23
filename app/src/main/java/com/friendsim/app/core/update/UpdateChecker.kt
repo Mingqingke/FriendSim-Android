@@ -36,6 +36,10 @@ object UpdateChecker {
         "https://ghfast.top/$url",
         "https://ghproxy.net/$url",
         "https://gh.llkk.cc/$url",
+        "https://github.moeyy.xyz/$url",
+        "https://gh-proxy.com/$url",
+        "https://hub.gitmirror.com/$url",
+        "https://ghps.cc/$url",
     )
 
     private val client = OkHttpClient.Builder()

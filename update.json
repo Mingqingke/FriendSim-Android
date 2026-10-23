@@ -1,13 +1,15 @@
 {
-  "version": "2.9.7",
-  "display": "2.3.0",
-  "code": 28,
-  "notes": "外观里新增高级材质与高级动画开关\n新增内容安全校验 越线不回答\n回复的情绪更连贯了\n修复了一些已知问题",
-  "page": "https://github.com/Mingqingke/FriendSim-Android/releases/tag/v2.3.0",
+  "version": "2.9.8",
+  "display": "2.3.1",
+  "code": 29,
+  "notes": "下载源从四个加到八个 更快\n记忆里的句末标点去掉了\n回复会带着上一句的情绪\n修复了一些已知问题",
+  "page": "https://github.com/Mingqingke/FriendSim-Android/releases/tag/v2.3.1",
   "apk": [
-    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.7/FriendSim-2.9.7.apk",
-    "https://ghfast.top/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.7/FriendSim-2.9.7.apk",
-    "https://ghproxy.net/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.7/FriendSim-2.9.7.apk",
-    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.3.0/FriendSim-2.3.0.apk"
+    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.8/FriendSim-2.9.8.apk",
+    "https://ghfast.top/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.8/FriendSim-2.9.8.apk",
+    "https://ghproxy.net/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.8/FriendSim-2.9.8.apk",
+    "https://github.moeyy.xyz/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.8/FriendSim-2.9.8.apk",
+    "https://gh-proxy.com/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.8/FriendSim-2.9.8.apk",
+    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.3.1/FriendSim-2.3.1.apk"
   ]
 }
