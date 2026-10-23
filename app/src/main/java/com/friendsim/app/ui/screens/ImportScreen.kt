@@ -1,5 +1,7 @@
 package com.friendsim.app.ui.screens
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,6 +63,34 @@ fun ImportChatScreen(onBack: () -> Unit, notify: (String) -> Unit) {
     var busy by remember { mutableStateOf(false) }
     var draft by remember { mutableStateOf<Draft?>(null) }
     var error by remember { mutableStateOf<String?>(null) }
+    var reading by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        reading = true
+        error = null
+        scope.launch {
+            val dataUrl = withContext(Dispatchers.IO) {
+                runCatching {
+                    val mime = context.contentResolver.getType(uri) ?: "image/jpeg"
+                    val bytes = context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
+                        ?: return@runCatching null
+                    if (bytes.size > 6 * 1024 * 1024) return@runCatching null
+                    "data:$mime;base64," + android.util.Base64.encodeToString(bytes, android.util.Base64.NO_WRAP)
+                }.getOrNull()
+            }
+            if (dataUrl == null) {
+                reading = false
+                error = "这张图读不了，或者超过 6MB"
+                return@launch
+            }
+            val text = withContext(Dispatchers.IO) {
+                runCatching { AppGraph.engine.ocrImage(dataUrl, AppGraph.settings.snapshot()) }.getOrNull()
+            }
+            reading = false
+            if (text.isNullOrBlank()) error = "没识别出文字，换张清晰的试试" else raw = text
+        }
+    }
     val currentId = target ?: friends.firstOrNull()?.id
 
     FsPage(title = "导入聊天记录", bottomPadding = 12.dp, onBack = onBack) {
@@ -92,6 +123,28 @@ fun ImportChatScreen(onBack: () -> Unit, notify: (String) -> Unit) {
                         text = "TA: 今天加班到十点\n我: 又加班\nTA: 习惯了 反正回去也没人等",
                         fontSize = 13.sp,
                         color = scheme.onSurfaceVariantSummary.copy(alpha = 0.6f),
+                    )
+                }
+            }
+        }
+        item(key = "photo") {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(44.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(scheme.surfaceContainerHigh)
+                        .clickable(enabled = !reading) { runCatching { picker.launch(arrayOf("image/*")) } },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = if (reading) "读取图片中…" else "从照片读取",
+                        fontSize = 13.5.sp,
+                        color = scheme.onSurface,
                     )
                 }
             }

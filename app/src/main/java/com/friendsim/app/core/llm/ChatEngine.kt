@@ -51,6 +51,33 @@ class ChatEngine(private val client: OpenAiClient = OpenAiClient()) {
     }
 
     /**
+     * 图片转文字：把聊天截图交给当前配置的模型（deepseek-v4-flash 自带文字识别）。
+     * 只做转写，不做理解，方便用户先改再分析。
+     */
+    suspend fun ocrImage(dataUrl: String, config: EngineConfig): String? {
+        val candidate = if (config.hasKey && config.keyValid) {
+            EndpointCandidate("user-key", "DeepSeek", config.baseUrl, config.model, config.apiKey)
+        } else {
+            EndpointPool.public.firstOrNull { EndpointPool.isAvailable(it.id) }
+        } ?: return null
+        val builder = StringBuilder()
+        runCatching {
+            client.stream(
+                baseUrl = candidate.baseUrl,
+                apiKey = candidate.apiKey,
+                model = candidate.model,
+                systemPrompt = "你是文字识别工具。把图片里的聊天记录按原文逐行转写，保留发言人和标点。" +
+                    "只输出转写结果，不要解释，不要加标题。看不清的字用□代替。",
+                history = emptyList(),
+                userText = "转写这张聊天截图",
+                imageDataUrl = dataUrl,
+                maxTokens = 1200,
+            ).collect { delta -> builder.append(delta) }
+        }
+        return builder.toString().trim().takeIf { it.isNotBlank() }
+    }
+
+    /**
      * 导入聊天记录 → 提炼人物档案。
      * 只返回模型原始文本（要求是 JSON），解析交给调用方，失败就当没分析出来。
      */
