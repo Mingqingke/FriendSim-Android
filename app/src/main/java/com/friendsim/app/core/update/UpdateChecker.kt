@@ -78,7 +78,7 @@ object UpdateChecker {
                 // 一律用 versionCode 判断是否更新。
                 val remoteCode = codeFromNotes(notes)
                 if (remoteCode <= BuildConfig.VERSION_CODE) return@runCatching null
-                Release(tag, cleanNotes(notes), mirrors(apk), page)
+                Release(displayFromNotes(notes) ?: tag, cleanNotes(notes), mirrors(apk), page)
             }
         }.getOrNull()
 
@@ -100,7 +100,7 @@ object UpdateChecker {
                     val notes = obj["notes"]?.jsonPrimitive?.contentOrNull.orEmpty()
                     val apks = obj["apk"]?.jsonArray?.mapNotNull { it.jsonPrimitive.contentOrNull }.orEmpty()
                     if (apks.isEmpty()) return@runCatching null
-                    Release(tag, notes, apks, obj["page"]?.jsonPrimitive?.contentOrNull.orEmpty())
+                    Release(obj["display"]?.jsonPrimitive?.contentOrNull ?: tag, notes, apks, obj["page"]?.jsonPrimitive?.contentOrNull.orEmpty())
                 }
             }.getOrNull()
             if (result != null) return result
@@ -112,9 +112,13 @@ object UpdateChecker {
     private fun codeFromNotes(notes: String): Int =
         Regex("(?m)^\\s*code\\s*=\\s*(\\d+)").find(notes)?.groupValues?.get(1)?.toIntOrNull() ?: 0
 
+    /** release body 里的 `display=2.0.1`：用于界面展示，和兼容标签解耦。 */
+    private fun displayFromNotes(notes: String): String? =
+        Regex("(?m)^\\s*display\\s*=\\s*(\\S+)").find(notes)?.groupValues?.get(1)
+
     private fun cleanNotes(notes: String): String =
         notes.lineSequence()
-            .filterNot { it.trim().matches(Regex("(?i)\\s*code\\s*=.*")) }
+            .filterNot { it.trim().matches(Regex("(?i)\\s*(code|display)\\s*=.*")) }
             .joinToString("\n")
 
     /** 1.2.3 与 1.10.0 比较，返回正数表示 a 更新。 */
