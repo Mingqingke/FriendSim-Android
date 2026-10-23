@@ -50,6 +50,31 @@ class ChatEngine(private val client: OpenAiClient = OpenAiClient()) {
         return builder.toString().trim().takeIf { it.isNotBlank() }?.take(80)
     }
 
+    /**
+     * 导入聊天记录 → 提炼人物档案。
+     * 只返回模型原始文本（要求是 JSON），解析交给调用方，失败就当没分析出来。
+     */
+    suspend fun analyzePersona(raw: String, config: EngineConfig): String? {
+        val candidate = if (config.hasKey && config.keyValid) {
+            EndpointCandidate("user-key", "DeepSeek", config.baseUrl, config.model, config.apiKey)
+        } else {
+            EndpointPool.public.firstOrNull { EndpointPool.isAvailable(it.id) }
+        } ?: return null
+        val builder = StringBuilder()
+        runCatching {
+            client.stream(
+                baseUrl = candidate.baseUrl,
+                apiKey = candidate.apiKey,
+                model = candidate.model,
+                systemPrompt = PersonaPrompt.ANALYZE_PROMPT,
+                history = emptyList(),
+                userText = raw.take(6000),
+                maxTokens = 700,
+            ).collect { delta -> builder.append(delta) }
+        }
+        return builder.toString().trim().takeIf { it.isNotBlank() }
+    }
+
     fun respond(
         friend: Friend,
         history: List<ChatMessage>,

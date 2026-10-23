@@ -137,4 +137,7 @@ sealed interface Route {
 
     /** 运行诊断 */
     data object Diagnostics : Route
+
+    /** 导入聊天记录并分析人物档案 */
+    data object ImportChat : Route
 }

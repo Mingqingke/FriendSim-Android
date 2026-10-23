@@ -17,6 +17,7 @@ fun SettingsScreen(
     onOpenPrivacyData: () -> Unit,
     onOpenMemory: () -> Unit = {},
     onOpenDiagnostics: () -> Unit = {},
+    onOpenImport: () -> Unit = {},
     onOpenAbout: () -> Unit,
 ) {
     FsPage(title = "设置", bottomPadding = bottomPadding) {
@@ -45,6 +46,12 @@ fun SettingsScreen(
                 title = "记忆管理",
                 summary = "查看 · 删除它记住的事",
                 onClick = onOpenMemory,
+            )
+            HorizontalDivider()
+            ArrowPreference(
+                title = "导入聊天记录",
+                summary = "提炼说话风格 · 写进角色",
+                onClick = onOpenImport,
             )
             HorizontalDivider()
             ArrowPreference(

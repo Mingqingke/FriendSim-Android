@@ -60,6 +60,7 @@ import com.friendsim.app.ui.screens.OnboardingScreen
 import com.friendsim.app.ui.screens.SettingsScreen
 import com.friendsim.app.ui.screens.MemoryCenterScreen
 import com.friendsim.app.ui.screens.DiagnosticsScreen
+import com.friendsim.app.ui.screens.ImportChatScreen
 import com.friendsim.app.ui.screens.SplashScreen
 import com.friendsim.app.ui.theme.FsTheme
 import kotlinx.coroutines.launch
@@ -226,6 +227,7 @@ fun FsApp(initialChatId: String? = null) {
                                 onOpenPrivacyData = { push(Route.PrivacyData) },
                                 onOpenMemory = { push(Route.Memory) },
                                 onOpenDiagnostics = { push(Route.Diagnostics) },
+                                onOpenImport = { push(Route.ImportChat) },
                                 onOpenAbout = { push(Route.About) },
                             )
 
@@ -251,6 +253,8 @@ fun FsApp(initialChatId: String? = null) {
                             is Route.Advanced -> AdvancedScreen(onBack = pop, notify = notify)
 
                             is Route.Memory -> MemoryCenterScreen(onBack = pop, notify = notify)
+
+                            is Route.ImportChat -> ImportChatScreen(onBack = pop, notify = notify)
 
                             is Route.Diagnostics -> DiagnosticsScreen(onBack = pop, notify = notify)
 
