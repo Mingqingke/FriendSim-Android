@@ -1,13 +1,13 @@
 {
-  "version": "2.10.0",
-  "display": "2.4.1",
-  "code": 31,
-  "notes": "导入页可以从照片读聊天记录了\n换成 deepseek-v4-flash 模型\n修复了一些已知问题",
-  "page": "https://github.com/Mingqingke/FriendSim-Android/releases/tag/v2.4.1",
+  "version": "2.10.1",
+  "display": "2.4.2",
+  "code": 32,
+  "notes": "换成新的应用图标\n单色主题图标同步\n修复了一些已知问题",
+  "page": "https://github.com/Mingqingke/FriendSim-Android/releases/tag/v2.4.2",
   "apk": [
-    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.10.0/FriendSim-2.10.0.apk",
-    "https://ghfast.top/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.10.0/FriendSim-2.10.0.apk",
-    "https://ghproxy.net/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.10.0/FriendSim-2.10.0.apk",
-    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.4.1/FriendSim-2.4.1.apk"
+    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.10.1/FriendSim-2.10.1.apk",
+    "https://ghfast.top/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.10.1/FriendSim-2.10.1.apk",
+    "https://ghproxy.net/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.10.1/FriendSim-2.10.1.apk",
+    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.4.2/FriendSim-2.4.2.apk"
   ]
 }
