@@ -210,6 +210,8 @@ fun ChatScreen(
     var input by remember(friendId) { mutableStateOf(Drafts.map[friendId].orEmpty()) }
     var draft by remember { mutableStateOf("") }
     var streaming by remember { mutableStateOf(false) }
+    // 同步闸门：在挂起之前就置位，连点不会重复发消息
+    var busy by remember { mutableStateOf(false) }
     var confirmClear by remember { mutableStateOf(false) }
     var askPrivacy by remember { mutableStateOf(false) }
     var pending by remember { mutableStateOf("") }
@@ -407,10 +409,12 @@ fun ChatScreen(
             statuses[userMsgId] = "failed"
         }
         streaming = false
+        busy = false
     }
 
     fun deliver(text: String, quote: String? = null) {
-        if (text.isBlank() || streaming) return
+        if (text.isBlank() || streaming || busy) return
+        busy = true
         scope.launch {
             val userMsgId = UUID.randomUUID().toString()
             store.append(
@@ -425,7 +429,8 @@ fun ChatScreen(
     }
 
     fun retry(message: ChatMessage) {
-        if (streaming) return
+        if (streaming || busy) return
+        busy = true
         scope.launch { runRequest(message.id, message.text, message.quote) }
     }
 

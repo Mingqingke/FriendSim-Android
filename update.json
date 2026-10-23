@@ -1,13 +1,13 @@
 {
-  "version": "2.9.2",
-  "display": "2.0.1",
-  "code": 23,
-  "notes": "全新的应用图标\n几何 F 与一个点，纯色无渐变\n修复了一些已知问题",
-  "page": "https://github.com/Mingqingke/FriendSim-Android/releases/tag/v2.0.1",
+  "version": "2.9.3",
+  "display": "2.0.2",
+  "code": 24,
+  "notes": "新图标：一个方正的对话框，左下折出尖尾\n连续点发送不会重复发消息\n修复了一些已知问题",
+  "page": "https://github.com/Mingqingke/FriendSim-Android/releases/tag/v2.0.2",
   "apk": [
-    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.2/FriendSim-2.9.2.apk",
-    "https://ghfast.top/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.2/FriendSim-2.9.2.apk",
-    "https://ghproxy.net/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.2/FriendSim-2.9.2.apk",
-    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.0.1/FriendSim-2.0.1.apk"
+    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.3/FriendSim-2.9.3.apk",
+    "https://ghfast.top/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.3/FriendSim-2.9.3.apk",
+    "https://ghproxy.net/https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.9.3/FriendSim-2.9.3.apk",
+    "https://github.com/Mingqingke/FriendSim-Android/releases/download/v2.0.2/FriendSim-2.0.2.apk"
   ]
 }
